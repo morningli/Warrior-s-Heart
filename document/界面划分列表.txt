@@ -1,0 +1,12 @@
+LoginScene		登陆场景
+-LogoPage		工作室及游戏Logo展示页
+-LoginPage		登陆游戏页
+MenuScene		菜单场景
+-MainMenuPage	主菜单页
+-BagPage		背包页
+-HeroPage		英雄信息页
+-ShopPage		商城页
+-DebugPage		调试页
+GameScene		游戏场景
+-GamePage		游戏页
+-ScorePage		结算页

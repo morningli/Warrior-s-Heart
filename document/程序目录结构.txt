@@ -1,0 +1,24 @@
+Assert
+-Backup		原始资源备份
+-Plugins	插件
+-Resources	资源
+--Atlas		图集
+--Audio		音频
+--Prefab	预制体
+---Login	登陆界面的预制体
+---Menu		菜单界面的预制体
+---Game		游戏界面的预制体
+--Text		文本
+--Texture	纹理
+-Scenes		场景
+-Scripts	代码
+--Core		游戏基础框架代码
+---Base		框架模块基类
+---Common	框架通用工具类
+---Manager	框架通用管理类
+--Model		游戏逻辑代码
+---Login	登陆界面的代码
+---Menu		菜单界面的代码
+---Game		游戏界面的代码
+--Compoment	游戏可复用组件代码
+-ThirdLib	第三方库

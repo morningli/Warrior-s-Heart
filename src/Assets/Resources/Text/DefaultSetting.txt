@@ -1,0 +1,4 @@
+//сно╥оЮ╧ь
+StartSpeed=100
+
+AddSpeed=10

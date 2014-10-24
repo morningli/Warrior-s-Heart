@@ -1,0 +1,7 @@
+*.suo
+*.csproj
+*.DotSettings
+*.sln
+src/Library/
+src/Temp/
+src/obj/
