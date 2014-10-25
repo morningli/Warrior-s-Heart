@@ -31,7 +31,9 @@ public class PageManager : MonoBehaviour
         }
     }
 
-
+	public float AnimationDuration = 1.0f;
+	public float AnimationScaleZoomIn = 10.0f;
+	public float AnimationScaleZoomOut = 0.1f;
     void Awake()
     {
         m_instance = this;
@@ -60,29 +62,61 @@ public class PageManager : MonoBehaviour
         switch (type)
         {
             case AnimationType.NULL:
+				page.transform.localPosition=new Vector3(0,0,0);
                 AnimationFinish();
                 break;
             case AnimationType.LeftToRight:
                 if (m_currentPage)
                 {
-                    m_currentPage.transform.DOLocalMoveX(Screen.width, 1);
+					m_currentPage.transform.localPosition=new Vector3(0,0,0);
+					m_currentPage.transform.DOLocalMoveX(Screen.width, AnimationDuration);
                 }
-                page.transform.DOLocalMoveX(0, 1).ChangeStartValue(-Screen.width);
+				page.transform.localPosition=new Vector3(-Screen.width,0,0);
+				page.transform.DOLocalMoveX(0, AnimationDuration);
+				
                 break;
             case AnimationType.RightToLeft:
                 if (m_currentPage)
                 {
-                    m_currentPage.transform.DOLocalMoveX(-Screen.width, 1);
+					m_currentPage.transform.localPosition=new Vector3(0,0,0);
+					m_currentPage.transform.DOLocalMoveX(-Screen.width, AnimationDuration);
                 }
-                page.transform.DOLocalMoveX(0, 1).ChangeStartValue(Screen.width);
+				page.transform.localPosition=new Vector3(Screen.width,0,0);
+				page.transform.DOLocalMoveX(0, AnimationDuration);
                 break;
             case AnimationType.TopToBottom:
-                break;
+				if (m_currentPage)
+				{
+					m_currentPage.transform.localPosition=new Vector3(0,0,0);
+					m_currentPage.transform.DOLocalMoveY(Screen.height, AnimationDuration);
+				}
+				page.transform.localPosition=new Vector3(0,-Screen.height,0);
+				page.transform.DOLocalMoveY(0, AnimationDuration);
+				break;
             case AnimationType.BottomToTop:
-                break;
+				if (m_currentPage)
+				{
+					m_currentPage.transform.localPosition=new Vector3(0,0,0);
+					m_currentPage.transform.DOLocalMoveY(-Screen.height, AnimationDuration);
+				}
+				page.transform.localPosition=new Vector3(0,Screen.height,0);
+				page.transform.DOLocalMoveY(0, AnimationDuration);
+				break;
             case AnimationType.MiddleZoomIn:
+				if (m_currentPage)
+				{
+					m_currentPage.transform.localScale=new Vector3(1,1,1);
+				}
+				page.transform.localScale=new Vector3(AnimationScaleZoomIn,AnimationScaleZoomIn,AnimationScaleZoomIn);
+				page.transform.DOScale(new Vector3(AnimationScaleZoomIn,AnimationScaleZoomIn,1), AnimationDuration);
                 break;
             case AnimationType.MiddleZoomOut:
+				if (m_currentPage)
+				{
+					m_currentPage.transform.localScale=new Vector3(1,1,1);
+				}
+				page.transform.localScale=new Vector3(AnimationScaleZoomOut,AnimationScaleZoomOut,AnimationScaleZoomOut);
+				page.transform.DOScale(new Vector3(AnimationScaleZoomOut,AnimationScaleZoomOut,1), AnimationDuration);
                 break;
             default:
                 break;
