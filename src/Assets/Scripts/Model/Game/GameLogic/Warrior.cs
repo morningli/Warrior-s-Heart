@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-
-public delegate void BattleEventDelegate(List<Warrior> sponsors,List<Warrior> responders,int priority,ArrayList paramlist);
 public class Warrior : MonoBehaviour 
 {
     public float Knockback;
@@ -21,32 +19,63 @@ public class Warrior : MonoBehaviour
     public float HitDelay;
     public float HitRestTime;
 
-    public SortedList WillStartBattleHandler;
-    public SortedList DidStartBattleHandler;
-    public SortedList WillAttackHandler;
-    public SortedList DidAttackHandler;
-    public SortedList WillHitHandler;
-    public SortedList DidHitHandler;
-    public SortedList WillBeHitHandler;
-    public SortedList DidBeHitHandler;
-    public SortedList WillKnockHandler;
-    public SortedList DidKnockHandler;
-    public SortedList WillBeKnockHandler;
-    public SortedList DidBeKnockHandler;
-    public SortedList WillHurtHandler;
-    public SortedList DidHurtHandler;
-    public SortedList ArriveTopSpeedHandler;
-    public SortedList StopKnockBackHandler;
-    public SortedList KnockScreenEdgeHandler;
-    public SortedList WillStartSpellHandler;
-    public SortedList DidStartSpellHandler;
-    public SortedList WillSpellFinishHandler;
-    public SortedList DidSpellFinishHandler;
-    public SortedList UpdateHandler;
+    public SortedList WillStartBattleHandler = new SortedList();
+    public SortedList DidStartBattleHandler = new SortedList();
+    public SortedList WillAttackHandler = new SortedList();
+    public SortedList DidAttackHandler = new SortedList();
+    public SortedList WillHitHandler = new SortedList();
+    public SortedList DidHitHandler = new SortedList();
+    public SortedList WillBeHitHandler = new SortedList();
+    public SortedList DidBeHitHandler = new SortedList();
+    public SortedList WillKnockHandler = new SortedList();
+    public SortedList DidKnockHandler = new SortedList();
+    public SortedList WillBeKnockHandler = new SortedList();
+    public SortedList DidBeKnockHandler = new SortedList();
+    public SortedList WillHurtHandler = new SortedList();
+    public SortedList DidHurtHandle = new SortedList();
+    public SortedList ArriveTopSpeedHandler = new SortedList();
+    public SortedList StopKnockBackHandler = new SortedList();
+    public SortedList KnockScreenEdgeHandler = new SortedList();
+    public SortedList WillPrepareSpellHandler = new SortedList();
+    public SortedList DidPrepareSpellHandler = new SortedList();
+    public SortedList WillStartSpellHandler = new SortedList();
+    public SortedList DidStartSpellHandler = new SortedList();
+    public SortedList WillFinishSpellHandler = new SortedList();
+    public SortedList DidFinishSpellHandler = new SortedList();
+    public SortedList WillBreakSpellHandler = new SortedList();
+    public SortedList DidBreakSpellHandler = new SortedList();
+    public SortedList WillBeBreakSpellHandler = new SortedList();
+    public SortedList DidBeBreakSpellHandler = new SortedList();
+    public SortedList WillUpdateHandler = new SortedList();
+    public SortedList DidUpdateHandler = new SortedList();
 
     void Update()
     {
-        
+        //WillUpdate
+        {
+            foreach (BattleEventHandler item in WillUpdateHandler)
+            {
+                List<Warrior> sponsprs = new List<Warrior>();
+                item.HandleEvent(sponsprs, null, null);
+            }
+        }
+
+
+        //Update
+        {
+
+        }
+
+
+        //DidUpdate
+        {
+            foreach (BattleEventHandler item in DidUpdateHandler)
+            {
+                List<Warrior> sponsprs = new List<Warrior>();
+                item.HandleEvent(sponsprs, null, null);
+            }
+        }
+
     }
 
     public void WillStartBattle()

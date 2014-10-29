@@ -10,7 +10,7 @@ public class BattleEventHandler
 {
     BattleEventHandlerType type;
     int priority;
-    public virtual bool HandleEvent(List<Warrior> sponsors, List<Warrior> responders, int priority, ArrayList paramlist)
+    public virtual bool HandleEvent(List<Warrior> sponsors, List<Warrior> responders, ArrayList paramlist)
     {
         return false;
     }
