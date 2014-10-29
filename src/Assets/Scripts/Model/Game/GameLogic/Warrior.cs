@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
+public delegate void BattleEventDelegate(List<Warrior> sponsors,List<Warrior> responders,int priority,ArrayList paramlist);
 public class Warrior : MonoBehaviour 
 {
     public float Knockback;
@@ -19,14 +21,28 @@ public class Warrior : MonoBehaviour
     public float HitDelay;
     public float HitRestTime;
 
-    public SortedList StartBattleHanders;
-    public SortedList AttackHanders;
-    public SortedList HitHanders;
-    public SortedList BeHitHanders;
-    public SortedList KnockHanders;
-    public SortedList BeKnockHanders;
-    public SortedList HurtHanders;
-    public SortedList BeHurtHanders;
+    public SortedList WillStartBattleHandler;
+    public SortedList DidStartBattleHandler;
+    public SortedList WillAttackHandler;
+    public SortedList DidAttackHandler;
+    public SortedList WillHitHandler;
+    public SortedList DidHitHandler;
+    public SortedList WillBeHitHandler;
+    public SortedList DidBeHitHandler;
+    public SortedList WillKnockHandler;
+    public SortedList DidKnockHandler;
+    public SortedList WillBeKnockHandler;
+    public SortedList DidBeKnockHandler;
+    public SortedList WillHurtHandler;
+    public SortedList DidHurtHandler;
+    public SortedList ArriveTopSpeedHandler;
+    public SortedList StopKnockBackHandler;
+    public SortedList KnockScreenEdgeHandler;
+    public SortedList WillStartSpellHandler;
+    public SortedList DidStartSpellHandler;
+    public SortedList WillSpellFinishHandler;
+    public SortedList DidSpellFinishHandler;
+    public SortedList UpdateHandler;
 
     void Update()
     {
