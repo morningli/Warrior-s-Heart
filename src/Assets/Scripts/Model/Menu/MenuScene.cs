@@ -7,4 +7,9 @@ public class MenuScene : MonoBehaviour
 	{
 		PageManager.Instance.ShowPage(ProfilePage.Instance);
 	}
+
+    void Update()
+    {
+        EventManager.Instance.Update();
+    }
 }

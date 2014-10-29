@@ -28,8 +28,12 @@ public class Test : MonoBehaviour
     }
 	void Start () 
     {
-        Debug.Log(Setting.Instance.currentSetting.GetInt("StartSpeed"));
-        Debug.Log(Setting.Instance.currentSetting.GetInt("AddSpeed"));
+        
 	}
+
+    void Update()
+    {
+        Debug.Log(Time.time);
+    }
 
 }

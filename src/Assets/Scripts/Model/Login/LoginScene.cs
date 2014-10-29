@@ -7,4 +7,9 @@ public class LoginScene : MonoBehaviour
     {
         PageManager.Instance.ShowPage(LogoPage.Instance);
     }
+
+    void Update()
+    {
+        EventManager.Instance.Update();
+    }
 }

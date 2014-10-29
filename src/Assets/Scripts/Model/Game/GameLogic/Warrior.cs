@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-public class Warrior : MonoBehaviour 
+public class Warrior : MonoBehaviour
 {
     public float Knockback;
     public float AntiKnockback;
@@ -19,10 +19,13 @@ public class Warrior : MonoBehaviour
     public float HitDelay;
     public float HitRestTime;
 
+
+
     public SortedList WillStartBattleHandler = new SortedList();
     public SortedList DidStartBattleHandler = new SortedList();
     public SortedList WillAttackHandler = new SortedList();
     public SortedList DidAttackHandler = new SortedList();
+    public SortedList FindHitTargetHandler = new SortedList();
     public SortedList WillHitHandler = new SortedList();
     public SortedList DidHitHandler = new SortedList();
     public SortedList WillBeHitHandler = new SortedList();
@@ -51,19 +54,24 @@ public class Warrior : MonoBehaviour
 
     void Update()
     {
+        List<Warrior> sponsors = new List<Warrior>();
         //Will
         {
             foreach (BattleEventHandler item in WillUpdateHandler)
             {
-                List<Warrior> sponsprs = new List<Warrior>();
-                item.HandleEvent(sponsprs, null, null);
+                item.HandleEvent(sponsors);
             }
         }
 
 
         //Do
         {
-
+            HitRestTime -= Time.deltaTime;
+            if (HitRestTime<=0)
+            {
+                HitRestTime = 0;
+                Hit();
+            }
         }
 
 
@@ -71,56 +79,48 @@ public class Warrior : MonoBehaviour
         {
             foreach (BattleEventHandler item in DidUpdateHandler)
             {
-                List<Warrior> sponsprs = new List<Warrior>();
-                item.HandleEvent(sponsprs, null, null);
+                item.HandleEvent(sponsors);
             }
         }
 
     }
 
-    public void StartBattle()
+    public void WillStartBattle()
     {
-        //Will
+        List<Warrior> sponsors = new List<Warrior>();
+        foreach (BattleEventHandler item in WillStartBattleHandler)
         {
-            foreach (BattleEventHandler item in WillStartBattleHandler)
-            {
-                List<Warrior> sponsprs = new List<Warrior>();
-                item.HandleEvent(sponsprs, null, null);
-            }
+            item.HandleEvent(sponsors);
         }
 
 
-        //Do
-        {
+    }
 
+    public void DidStartBattle()
+    {
+        List<Warrior> sponsors = new List<Warrior>();
+        foreach (BattleEventHandler item in DidStartBattleHandler)
+        {
+            item.HandleEvent(sponsors);
         }
 
-
-        //Did
-        {
-            foreach (BattleEventHandler item in DidStartBattleHandler)
-            {
-                List<Warrior> sponsprs = new List<Warrior>();
-                item.HandleEvent(sponsprs, null, null);
-            }
-        }
     }
 
     public void Attack()
     {
+        List<Warrior> sponsors = new List<Warrior>() { this };
         //Will
         {
             foreach (BattleEventHandler item in WillAttackHandler)
             {
-                List<Warrior> sponsprs = new List<Warrior>();
-                item.HandleEvent(sponsprs, null, null);
+                item.HandleEvent(sponsors);
             }
         }
 
 
         //Do
         {
-
+            HitRestTime = HitDelay;
         }
 
 
@@ -128,39 +128,60 @@ public class Warrior : MonoBehaviour
         {
             foreach (BattleEventHandler item in DidAttackHandler)
             {
-                List<Warrior> sponsprs = new List<Warrior>();
-                item.HandleEvent(sponsprs, null, null);
+                item.HandleEvent(sponsors);
             }
         }
     }
 
-    public void WillHit()
-    {
-
-    }
     public void Hit()
     {
+        List<Warrior> responders = new List<Warrior>();
+        if (FindHitTargetHandler.Count>0)
+        {
+            responders = (FindHitTargetHandler[0] as BattleEventHandler).HandleEvent(new List<Warrior>() { this }) as List<Warrior>;
+        }
+        List<Warrior> sponsors = new List<Warrior>() { this };
+        //Will
+        {
+            SortedList list = new SortedList();
+            foreach (BattleEventHandler item in WillHitHandler)
+            {
+                list.Add(item.priority, item);
+            }
 
-    }
+            foreach (Warrior responder in responders)
+            {
+                foreach (BattleEventHandler item in responder.WillBeHitHandler)
+                {
+                    list.Add(item.priority, item);
+                }
+            }
 
-    public void DidHit()
-    {
+            
+        }
 
-    }
 
-    public void WillBeHit()
-    {
+        //Do
+        {
+           
+        }
 
-    }
 
-    public void BeHit()
-    {
+        //Did
+        {
+            foreach (BattleEventHandler item in DidHitHandler)
+            {
+                item.HandleEvent(sponsors, responders);
+            }
 
-    }
-
-    public void DidBeHit()
-    {
-
+            foreach (Warrior responder in responders)
+            {
+                foreach (BattleEventHandler item in responder.DidBeHitHandler)
+                {
+                    item.HandleEvent(sponsors, responders);
+                }
+            }
+        }
     }
 
     public void WillKnock()

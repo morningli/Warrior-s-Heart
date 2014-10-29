@@ -9,4 +9,8 @@ public class GameScene : MonoBehaviour
         PageManager.Instance.ShowPage(GamePage.Instance);
 	}
 
+    void Update()
+    {
+        EventManager.Instance.Update();
+    }
 }

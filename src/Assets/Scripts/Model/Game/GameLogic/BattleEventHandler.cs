@@ -8,12 +8,11 @@ public enum BattleEventHandlerType
 }
 public class BattleEventHandler
 {
-    BattleEventHandlerType type;
-    int priority;
-    public virtual bool HandleEvent(List<Warrior> sponsors, List<Warrior> responders, ArrayList paramlist)
+    public BattleEventHandlerType type;
+    public int priority;
+    public virtual object HandleEvent(List<Warrior> sponsors = null, List<Warrior> responders = null, object param0 = null, object param1 = null, object param2 = null, object param3 = null)
     {
-        return false;
+        return null;
     }
 }
-
 
