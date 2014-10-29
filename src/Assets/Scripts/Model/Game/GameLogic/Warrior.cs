@@ -51,7 +51,7 @@ public class Warrior : MonoBehaviour
 
     void Update()
     {
-        //WillUpdate
+        //Will
         {
             foreach (BattleEventHandler item in WillUpdateHandler)
             {
@@ -61,13 +61,13 @@ public class Warrior : MonoBehaviour
         }
 
 
-        //Update
+        //Do
         {
 
         }
 
 
-        //DidUpdate
+        //Did
         {
             foreach (BattleEventHandler item in DidUpdateHandler)
             {
@@ -78,27 +78,60 @@ public class Warrior : MonoBehaviour
 
     }
 
-    public void WillStartBattle()
+    public void StartBattle()
     {
+        //Will
+        {
+            foreach (BattleEventHandler item in WillStartBattleHandler)
+            {
+                List<Warrior> sponsprs = new List<Warrior>();
+                item.HandleEvent(sponsprs, null, null);
+            }
+        }
 
+
+        //Do
+        {
+
+        }
+
+
+        //Did
+        {
+            foreach (BattleEventHandler item in DidStartBattleHandler)
+            {
+                List<Warrior> sponsprs = new List<Warrior>();
+                item.HandleEvent(sponsprs, null, null);
+            }
+        }
     }
 
-    public void DidStartBattle()
-    {
-
-    }
-
-    public void WillAttack()
-    {
-
-    }
     public void Attack()
     {
+        //Will
+        {
+            foreach (BattleEventHandler item in WillAttackHandler)
+            {
+                List<Warrior> sponsprs = new List<Warrior>();
+                item.HandleEvent(sponsprs, null, null);
+            }
+        }
 
-    }
-    public void DidAttack()
-    {
 
+        //Do
+        {
+
+        }
+
+
+        //Did
+        {
+            foreach (BattleEventHandler item in DidAttackHandler)
+            {
+                List<Warrior> sponsprs = new List<Warrior>();
+                item.HandleEvent(sponsprs, null, null);
+            }
+        }
     }
 
     public void WillHit()
