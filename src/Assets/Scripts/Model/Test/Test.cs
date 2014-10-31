@@ -1,39 +1,25 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using DG.Tweening;
 
 public class Test : MonoBehaviour 
 {
-    float mx = 1;
-    float tx
-    {
-        get
-        {
-            return mx;
-        }
-        set
-        {
-            mx = value;
-            Debug.Log(mx);
-        }
-    }
-
-    float getit()
-    {
-        return tx;
-    }
-    void setit(float x)
-    {
-        tx = x;
-    }
 	void Start () 
     {
-        
+        OrderedList<BattleEventHandler> list = new OrderedList<BattleEventHandler>(new EventHandlerComparer());
+        for (int i = 0; i < 100; i++)
+        {
+            BattleEventHandler handle=new BattleEventHandler();
+            handle.priority=Random.Range(0, 100);
+            list.Add(handle);
+        }
+
+        for (int i = 0; i < 100; i++)
+        {
+            Debug.Log(list[i].priority);
+        }
 	}
 
-    void Update()
-    {
-        Debug.Log(Time.time);
-    }
 
 }

@@ -35,7 +35,9 @@ public class Warrior : MonoBehaviour
     public SortedList WillBeKnockHandler = new SortedList();
     public SortedList DidBeKnockHandler = new SortedList();
     public SortedList WillHurtHandler = new SortedList();
-    public SortedList DidHurtHandle = new SortedList();
+    public SortedList DidHurtHandler = new SortedList();
+    public SortedList WillBeHurtHandler = new SortedList();
+    public SortedList DidBeHurtHandler = new SortedList();
     public SortedList ArriveTopSpeedHandler = new SortedList();
     public SortedList StopKnockBackHandler = new SortedList();
     public SortedList KnockScreenEdgeHandler = new SortedList();
@@ -135,6 +137,7 @@ public class Warrior : MonoBehaviour
 
     public void Hit()
     {
+        //FindHit
         List<Warrior> responders = new List<Warrior>();
         if (FindHitTargetHandler.Count>0)
         {
@@ -157,6 +160,11 @@ public class Warrior : MonoBehaviour
                 }
             }
 
+            foreach (BattleEventHandler item in list)
+            {
+                item.HandleEvent(sponsors, responders);
+            }
+
             
         }
 
@@ -169,73 +177,165 @@ public class Warrior : MonoBehaviour
 
         //Did
         {
+            SortedList list = new SortedList();
             foreach (BattleEventHandler item in DidHitHandler)
             {
-                item.HandleEvent(sponsors, responders);
+                list.Add(item.priority, item);
             }
 
             foreach (Warrior responder in responders)
             {
                 foreach (BattleEventHandler item in responder.DidBeHitHandler)
                 {
-                    item.HandleEvent(sponsors, responders);
+                    list.Add(item.priority, item);
                 }
+            }
+
+            foreach (BattleEventHandler item in list)
+            {
+                item.HandleEvent(sponsors, responders);
+            }
+        }
+    }
+    public void Knock(List<Warrior> sponsors = null, List<Warrior> responders = null, object param0 = null, object param1 = null, object param2 = null, object param3 = null)
+    {
+        //Will
+        {
+            SortedList list = new SortedList();
+            foreach (BattleEventHandler item in WillKnockHandler)
+            {
+                list.Add(item.priority, item);
+            }
+
+            foreach (Warrior responder in responders)
+            {
+                foreach (BattleEventHandler item in responder.WillBeKnockHandler)
+                {
+                    list.Add(item.priority, item);
+                }
+            }
+
+            foreach (BattleEventHandler item in list)
+            {
+                item.HandleEvent(sponsors, responders, param0, param1, param2, param3);
+            }
+
+
+        }
+
+
+        //Do
+        {
+
+        }
+
+
+        //Did
+        {
+            SortedList list = new SortedList();
+            foreach (BattleEventHandler item in DidKnockHandler)
+            {
+                list.Add(item.priority, item);
+            }
+
+            foreach (Warrior responder in responders)
+            {
+                foreach (BattleEventHandler item in responder.DidBeKnockHandler)
+                {
+                    list.Add(item.priority, item);
+                }
+            }
+
+            foreach (BattleEventHandler item in list)
+            {
+                item.HandleEvent(sponsors, responders, param0, param1, param2, param3);
             }
         }
     }
 
-    public void WillKnock()
-    {
 
+    public void Hurt(List<Warrior> sponsors = null, List<Warrior> responders = null, object param0 = null, object param1 = null, object param2 = null, object param3 = null)
+    {
+        //Will
+        {
+            SortedList list = new SortedList();
+            foreach (BattleEventHandler item in WillHurtHandler)
+            {
+                list.Add(item.priority, item);
+            }
+
+            foreach (Warrior responder in responders)
+            {
+                foreach (BattleEventHandler item in responder.WillBeHurtHandler)
+                {
+                    list.Add(item.priority, item);
+                }
+            }
+
+            foreach (BattleEventHandler item in list)
+            {
+                item.HandleEvent(sponsors, responders, param0, param1, param2, param3);
+            }
+
+
+        }
+
+
+        //Do
+        {
+
+        }
+
+
+        //Did
+        {
+            SortedList list = new SortedList();
+            foreach (BattleEventHandler item in DidBeHurtHandler)
+            {
+                list.Add(item.priority, item);
+            }
+
+            foreach (Warrior responder in responders)
+            {
+                foreach (BattleEventHandler item in responder.DidBeHurtHandler)
+                {
+                    list.Add(item.priority, item);
+                }
+            }
+
+            foreach (BattleEventHandler item in list)
+            {
+                item.HandleEvent(sponsors, responders, param0, param1, param2, param3);
+            }
+        }
     }
 
-    public void DidKnock()
-    {
-
-    }
-
-    public void WillBeKnock()
-    {
-
-    }
-
-    public void DidBeKnock()
-    {
-
-    }
-
-    public void WillHurt()
-    {
-
-    }
-
-    public void DidHurt()
-    {
-
-    }
-    public void WillBeHurt()
-    {
-
-    }
-
-    public void DidBeHurt()
-    {
-
-    }
 
     public void ArriveTopSpeed()
     {
-
+        List<Warrior> sponsors = new List<Warrior>() { this };
+        foreach (BattleEventHandler item in ArriveTopSpeedHandler)
+        {
+            item.HandleEvent(sponsors);
+        }
     }
 
     public void StopKnockBack()
     {
-
+        List<Warrior> sponsors = new List<Warrior>() { this };
+        foreach (BattleEventHandler item in StopKnockBackHandler)
+        {
+            item.HandleEvent(sponsors);
+        }
     }
 
     public void KnockScreenEdge()
     {
-
+        List<Warrior> sponsors = new List<Warrior>() { this };
+        foreach (BattleEventHandler item in KnockScreenEdgeHandler)
+        {
+            item.HandleEvent(sponsors);
+        }
     }
 
     public void WillStartSpell()

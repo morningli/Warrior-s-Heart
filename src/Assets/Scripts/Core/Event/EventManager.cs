@@ -36,35 +36,21 @@ public class EventManager
 
     public void RegisterEvent(EventDefine define, EventDelegate func)
     {
-        try
+        if (!EventDic.ContainsKey(define))
         {
-            EventDic.Add(define,new List<EventDelegate>());
+            EventDic.Add(define, new List<EventDelegate>());
         }
-        catch (System.Exception ex)
-        {
-        	
-        }
-        try
-        {
-            EventDic[define].Add(func);
-        }
-        catch (System.Exception ex)
-        {
-        	
-        }
-        
+        EventDic[define].Add(func);
     }
 
     public void UnRegisterEvent(EventDefine define, EventDelegate func)
     {
-        try
+        if (!EventDic.ContainsKey(define))
         {
-            EventDic[define].Remove(func);
+            return;
         }
-        catch (System.Exception ex)
-        {
-        	
-        }
+        EventDic[define].Remove(func);
+
     }
 
     void DellEvent(EventDefine define, object param1, object param2, object param3, object param4)

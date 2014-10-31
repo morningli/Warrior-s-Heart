@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Buff 
 {
-
+    Warrior owner;
 	public virtual void Attach(Warrior warrior)
     {
 
