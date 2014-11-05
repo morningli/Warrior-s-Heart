@@ -21,10 +21,6 @@ class EventHandlerComparer : IComparer<BattleEventHandler>
         }
     }
 }
-public enum BattleEventDefine
-{
-
-}
 public class BattleField : MonoBehaviour
 {
     static BattleField m_instance;
@@ -38,41 +34,29 @@ public class BattleField : MonoBehaviour
     List<Warrior> m_AttackerList;
     List<Warrior> m_DefenderList;
 
+    public float baseLength;
 
     void Awake()
     {
         m_instance = this;
+        baseLength = Screen.currentResolution.width / 100.0f;
     }
     public void StartBattle()
     {
-        foreach (Warrior warrior in m_AttackerList)
-        {
-            warrior.WillStartBattle();
-        }
-        foreach (Warrior warrior in m_DefenderList)
-        {
-            warrior.WillStartBattle();
-        }
+        this.SendEvent(BattleEventType.WillStartBattle);
         /////////////////////////
 
 
 
         /////////////////////////
-        foreach (Warrior warrior in m_AttackerList)
-        {
-            warrior.DidStartBattle();
-        }
-        foreach (Warrior warrior in m_DefenderList)
-        {
-            warrior.DidStartBattle();
-        }
+        this.SendEvent(BattleEventType.DidStartBattle);
     }
 
 
     //Event
-    Dictionary<BattleEventDefine, OrderedList<BattleEventHandler>> EventDic = new Dictionary<BattleEventDefine, OrderedList<BattleEventHandler>>();
+    Dictionary<BattleEventType, OrderedList<BattleEventHandler>> EventDic = new Dictionary<BattleEventType, OrderedList<BattleEventHandler>>();
 
-    public void RegisterEvent(BattleEventDefine define, int priority, BattleEventHandler handler)
+    public void RegisterEvent(BattleEventType define, int priority, BattleEventHandler handler)
     {
         if (!EventDic.ContainsKey(define))
         {
@@ -81,7 +65,7 @@ public class BattleField : MonoBehaviour
         EventDic[define].Add(handler);
     }
 
-    public void UnRegisterEvent(BattleEventDefine define, BattleEventHandler handler)
+    public void UnRegisterEvent(BattleEventType define, BattleEventHandler handler)
     {
         if (!EventDic.ContainsKey(define))
         {
@@ -91,7 +75,7 @@ public class BattleField : MonoBehaviour
 
     }
 
-    public void SendEvent(BattleEventDefine define, List<Warrior> sponsors = null, List<Warrior> responders = null, object param0 = null, object param1 = null, object param2 = null, object param3 = null)
+    public void SendEvent(BattleEventType define, List<Warrior> sponsors = null, List<Warrior> responders = null, object param0 = null, object param1 = null, object param2 = null, object param3 = null)
     {
 
         OrderedList<BattleEventHandler> handlerlist;
@@ -107,6 +91,25 @@ public class BattleField : MonoBehaviour
         for (int i = 0; i < handlerlist.Count; i++)
         {
             handlerlist[i].HandleEvent(sponsors, responders, param0, param1, param2, param3);
+        }
+    }
+
+    void Update()
+    {
+        foreach (Warrior attacker in m_AttackerList)
+        {
+            foreach (Warrior defender in m_DefenderList)
+            {
+                float dis=Mathf.Abs(attacker.transform.localPosition.x-defender.transform.localPosition.x);
+                if (attacker.AttackDistance >= dis)
+                {
+                    attacker.Attack();
+                }
+                if (defender.AttackDistance >= dis)
+                {
+                    defender.Attack();
+                }
+            }
         }
     }
 
