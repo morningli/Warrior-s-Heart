@@ -19,7 +19,7 @@ public class MainMenuPage : BasePage
 
 	void Awake()
 	{
-		UIEventListener.Get (gameObject.FindChild ("MilitaryButton")).onClick = OnStartGameClick;
+		UIEventListener.Get(gameObject.FindChild ("MilitaryButton")).onClick = OnStartGameClick;
 	}
 
 	void OnStartGameClick(GameObject go)
