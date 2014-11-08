@@ -10,7 +10,7 @@ public class MainMenuPage : BasePage
 		{
 			if (m_instance == null)
 			{
-				m_instance = ResourceManager.Load("Prefab/Login/MainMenuPage").GetComponent<MainMenuPage>();
+				m_instance = ResourceManager.Load("Prefab/Menu/MainMenuPage/MainMenuPage").GetComponent<MainMenuPage>();
 			}
 			return m_instance;
 		}
@@ -19,11 +19,11 @@ public class MainMenuPage : BasePage
 
 	void Awake()
 	{
-		UIEventListener.Get (gameObject.FindChild ("StartGame")).onClick = OnStartGameClick;
+		UIEventListener.Get (gameObject.FindChild ("MilitaryButton")).onClick = OnStartGameClick;
 	}
 
 	void OnStartGameClick(GameObject go)
 	{
-		Application.LoadLevel ("Game");
+		Debug.Log("2134");
 	}
 }
