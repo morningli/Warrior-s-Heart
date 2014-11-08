@@ -25,6 +25,6 @@ public class UIHeroPage : BasePage {
 	void OnClickForSelectSkill(GameObject go)
 	{
 		Debug.Log ("select");
-		PageManager.Instance.ShowPage(UISkillPage.Instance, PageManager.AnimationType.MiddleZoomIn);
+		PageManager.Instance.ShowDialog(UISkillPage.Instance, PageManager.AnimationType.NULL);
 	}
 }
