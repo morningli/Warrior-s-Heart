@@ -52,6 +52,13 @@ public class PageManager : MonoBehaviour
     public void ShowPage(BasePage page, AnimationType type = AnimationType.NULL)
     {
         Tweener tweener = null;
+
+		//把前面的页面挪走
+		if (m_currentPage) 
+		{
+			m_currentPage.transform.localPosition = new Vector3 (0, -Screen.height, 0);
+		}
+
         m_nextPage = page;
         this.gameObject.AddChild(m_nextPage.gameObject);
         if (m_currentPage)
