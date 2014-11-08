@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SortedLabel : MonoBehaviour {
-	public static SortedLabel Instance
+public class UISortedLabel : MonoBehaviour {
+	public static UISortedLabel Instance
 	{
 		get
 		{
-			return ResourceManager.Load("Prefab/Menu/BagPage/SortedLabel").GetComponent<SortedLabel>();
+			return ResourceManager.Load("Prefab/Menu/BagPage/SortedLabel").GetComponent<UISortedLabel>();
 		}
 	}
 	

@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CardInList : MonoBehaviour {
-	public static CardInList Instance
+public class UICardInList : MonoBehaviour {
+	public static UICardInList Instance
 	{
 		get
 		{
-			return ResourceManager.Load("Prefab/Menu/HeroPage/CardInList").GetComponent<CardInList>();
+			return ResourceManager.Load("Prefab/Menu/HeroPage/CardInList").GetComponent<UICardInList>();
 		}
 	}
 	

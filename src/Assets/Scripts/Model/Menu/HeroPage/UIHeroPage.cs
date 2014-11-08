@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class HeroPage : BasePage {
-	static HeroPage m_instance;
-	public static HeroPage Instance
+public class UIHeroPage : BasePage {
+	static UIHeroPage m_instance;
+	public static UIHeroPage Instance
 	{
 		get
 		{
 			if (m_instance == null)
 			{
-				m_instance = ResourceManager.Load("Prefab/Menu/HeroPage/HeroPage").GetComponent<HeroPage>();
+				m_instance = ResourceManager.Load("Prefab/Menu/HeroPage/HeroPage").GetComponent<UIHeroPage>();
 			}
 			return m_instance;
 		}
@@ -26,6 +26,6 @@ public class HeroPage : BasePage {
 	{
 		Debug.Log ("select");
 		//Application.LoadLevel ("Game");
-		PageManager.Instance.ShowPage(SkillPage.Instance);
+		PageManager.Instance.ShowPage(UISkillPage.Instance);
 	}
 }

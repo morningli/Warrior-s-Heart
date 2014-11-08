@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BagItem : MonoBehaviour {
-	public static BagItem Instance
+public class UIBagItem : MonoBehaviour {
+	public static UIBagItem Instance
 	{
 		get
 		{
-			return ResourceManager.Load("Prefab/Menu/BagPage/BagItem").GetComponent<BagItem>();
+			return ResourceManager.Load("Prefab/Menu/BagPage/BagItem").GetComponent<UIBagItem>();
 		}
 	}
 	

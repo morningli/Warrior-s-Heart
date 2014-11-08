@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BagPage : BasePage {
-	static BagPage m_instance;
-	public static BagPage Instance
+public class UIBagPage : BasePage {
+	static UIBagPage m_instance;
+	public static UIBagPage Instance
 	{
 		get
 		{
 			if (m_instance == null)
 			{
-				m_instance = ResourceManager.Load("Prefab/Menu/BagPage/BagPage").GetComponent<BagPage>();
+				m_instance = ResourceManager.Load("Prefab/Menu/BagPage/BagPage").GetComponent<UIBagPage>();
 			}
 			return m_instance;
 		}
@@ -21,7 +21,7 @@ public class BagPage : BasePage {
 	{
 		for (int i = 0; i < 19; ++i)
 		{
-			BagItem item = BagItem.Instance;
+			UIBagItem item = UIBagItem.Instance;
 			item.SetObjectId(i.ToString());
 
 			gameObject.FindChild("Grid").AddChild(item.gameObject);
@@ -31,7 +31,7 @@ public class BagPage : BasePage {
 
 		for (int i = 0; i < 3; ++i)
 		{
-			SortedLabel label = SortedLabel.Instance;
+			UISortedLabel label = UISortedLabel.Instance;
 			label.SetLabelId(i.ToString());
 			if (i == 0)
 			{
@@ -47,12 +47,12 @@ public class BagPage : BasePage {
 	
 	void OnClickForBagLabel(GameObject bagLabel)
 	{
-		SortedLabel label = bagLabel.GetComponent<SortedLabel>();
+		UISortedLabel label = bagLabel.GetComponent<UISortedLabel>();
 		int iId = int.Parse(label.GetLabelId());
 
 		for (int i = 0; i < m_ItemList.Count; ++i)
 		{
-			BagItem item = m_ItemList[i] as BagItem;
+			UIBagItem item = m_ItemList[i] as UIBagItem;
 			int iCur = int.Parse(item.GetObjectId());
 
 			if (iCur % (iId + 1) != 0)

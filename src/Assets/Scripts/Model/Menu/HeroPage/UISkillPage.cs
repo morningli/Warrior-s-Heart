@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SkillPage : BasePage {
-	static SkillPage m_instance;
-	public static SkillPage Instance
+public class UISkillPage : BasePage {
+	static UISkillPage m_instance;
+	public static UISkillPage Instance
 	{
 		get
 		{
 			if (m_instance == null)
 			{
-				m_instance = ResourceManager.Load("Prefab/Menu/HeroPage/SkillPage").GetComponent<SkillPage>();
+				m_instance = ResourceManager.Load("Prefab/Menu/HeroPage/SkillPage").GetComponent<UISkillPage>();
 			}
 			return m_instance;
 		}
@@ -25,7 +25,7 @@ public class SkillPage : BasePage {
 
 		for (int i = 0; i < 10; i++) 
 		{
-			CardInList card = CardInList.Instance;
+			UICardInList card = UICardInList.Instance;
 
 			card.SetCardName("五谷丰登(" + i + ")");
 			card.SetCardDecs("增加全体战士士气，全体攻击+10%");
@@ -40,9 +40,9 @@ public class SkillPage : BasePage {
 
 	void OnClickForSkillCard(GameObject go)
 	{
-		CardInList card = go.GetComponent<CardInList>();
+		UICardInList card = go.GetComponent<UICardInList>();
 		//Debug.Log(card.GetCardId());
-		SkillDetail skillPage = SkillDetail.Instance;
+		UISkillDetail skillPage = UISkillDetail.Instance;
 		skillPage.SetCardId(card.GetCardId());
 		PageManager.Instance.ShowPage(skillPage);
 	}

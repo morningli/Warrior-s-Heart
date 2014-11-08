@@ -72,7 +72,7 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.DOLocalMoveX(Screen.width, AnimationDuration);
                 }
 				page.transform.localPosition=new Vector3(-Screen.width,0,0);
-				page.transform.DOLocalMoveX(0, AnimationDuration);
+				tweener = page.transform.DOLocalMoveX(0, AnimationDuration);
 				
                 break;
             case AnimationType.RightToLeft:
@@ -82,7 +82,7 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.DOLocalMoveX(-Screen.width, AnimationDuration);
                 }
 				page.transform.localPosition=new Vector3(Screen.width,0,0);
-				page.transform.DOLocalMoveX(0, AnimationDuration);
+				tweener = page.transform.DOLocalMoveX(0, AnimationDuration);
                 break;
             case AnimationType.TopToBottom:
 				if (m_currentPage)
@@ -91,7 +91,7 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.DOLocalMoveY(Screen.height, AnimationDuration);
 				}
 				page.transform.localPosition=new Vector3(0,-Screen.height,0);
-				page.transform.DOLocalMoveY(0, AnimationDuration);
+				tweener = page.transform.DOLocalMoveY(0, AnimationDuration);
 				break;
             case AnimationType.BottomToTop:
 				if (m_currentPage)
@@ -100,7 +100,7 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.DOLocalMoveY(-Screen.height, AnimationDuration);
 				}
 				page.transform.localPosition=new Vector3(0,Screen.height,0);
-				page.transform.DOLocalMoveY(0, AnimationDuration);
+				tweener = page.transform.DOLocalMoveY(0, AnimationDuration);
 				break;
             case AnimationType.MiddleZoomIn:
 				if (m_currentPage)
@@ -108,7 +108,7 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.localScale=new Vector3(1,1,1);
 				}
 				page.transform.localScale=new Vector3(AnimationScaleZoomIn,AnimationScaleZoomIn,AnimationScaleZoomIn);
-				page.transform.DOScale(new Vector3(AnimationScaleZoomIn,AnimationScaleZoomIn,1), AnimationDuration);
+				tweener = page.transform.DOScale(new Vector3(AnimationScaleZoomIn,AnimationScaleZoomIn,1), AnimationDuration);
                 break;
             case AnimationType.MiddleZoomOut:
 				if (m_currentPage)
@@ -116,7 +116,7 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.localScale=new Vector3(1,1,1);
 				}
 				page.transform.localScale=new Vector3(AnimationScaleZoomOut,AnimationScaleZoomOut,AnimationScaleZoomOut);
-				page.transform.DOScale(new Vector3(AnimationScaleZoomOut,AnimationScaleZoomOut,1), AnimationDuration);
+				tweener = page.transform.DOScale(new Vector3(AnimationScaleZoomOut,AnimationScaleZoomOut,1), AnimationDuration);
                 break;
             default:
                 break;

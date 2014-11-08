@@ -1,15 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SkillDetail : BasePage {
-	static SkillDetail m_instance;
-	public static SkillDetail Instance
+public class UISkillDetail : BasePage {
+	static UISkillDetail m_instance;
+	public static UISkillDetail Instance
 	{
 		get
 		{
 			if (m_instance == null)
 			{
-				m_instance = ResourceManager.Load("Prefab/Menu/HeroPage/SkillDetail").GetComponent<SkillDetail>();
+				m_instance = ResourceManager.Load("Prefab/Menu/HeroPage/SkillDetail").GetComponent<UISkillDetail>();
 			}
 			return m_instance;
 		}
@@ -26,7 +26,7 @@ public class SkillDetail : BasePage {
 	{
 		Debug.Log ("equip skill " + m_strCurrentCardId);
 		//Application.LoadLevel ("Game");
-		PageManager.Instance.ShowPage(HeroPage.Instance);
+		PageManager.Instance.ShowPage(UIHeroPage.Instance);
 	}
 
 	public void SetCardId(string cardid)
