@@ -26,7 +26,7 @@ public class UISkillDetail : BasePage {
 	{
 		Debug.Log ("equip skill " + m_strCurrentCardId);
 		//Application.LoadLevel ("Game");
-		PageManager.Instance.ShowPage(UIHeroPage.Instance);
+		PageManager.Instance.ShowPage(UIHeroPage.Instance, PageManager.AnimationType.MiddleZoomIn);
 	}
 
 	public void SetCardId(string cardid)

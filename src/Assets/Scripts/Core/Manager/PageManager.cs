@@ -53,14 +53,9 @@ public class PageManager : MonoBehaviour
     {
         Tweener tweener = null;
 
-		//把前面的页面挪走
-		if (m_currentPage) 
-		{
-			m_currentPage.transform.localPosition = new Vector3 (0, -Screen.height, 0);
-		}
+		m_nextPage = page;
 
-        m_nextPage = page;
-        this.gameObject.AddChild(m_nextPage.gameObject);
+		this.gameObject.AddChild(page.gameObject);
         if (m_currentPage)
         {
             m_currentPage.PageWillDisappear();
@@ -69,6 +64,10 @@ public class PageManager : MonoBehaviour
         switch (type)
         {
             case AnimationType.NULL:
+				if (m_currentPage) 
+				{
+					m_currentPage.transform.localPosition = new Vector3 (0, -Screen.height, 0);
+				}
 				page.transform.localPosition=new Vector3(0,0,0);
                 AnimationFinish();
                 break;
@@ -112,18 +111,20 @@ public class PageManager : MonoBehaviour
             case AnimationType.MiddleZoomIn:
 				if (m_currentPage)
 				{
-					m_currentPage.transform.localScale=new Vector3(1,1,1);
+					m_currentPage.transform.localPosition = new Vector3 (0, -Screen.height, 0);
 				}
-				page.transform.localScale=new Vector3(AnimationScaleZoomIn,AnimationScaleZoomIn,AnimationScaleZoomIn);
-				tweener = page.transform.DOScale(new Vector3(AnimationScaleZoomIn,AnimationScaleZoomIn,1), AnimationDuration);
+				page.transform.localPosition=new Vector3(0,0,0);
+				page.transform.localScale=new Vector3(AnimationScaleZoomIn,AnimationScaleZoomIn,1);
+				tweener = page.transform.DOScale(new Vector3(1,1,1), AnimationDuration);
                 break;
             case AnimationType.MiddleZoomOut:
 				if (m_currentPage)
 				{
-					m_currentPage.transform.localScale=new Vector3(1,1,1);
+					m_currentPage.transform.localPosition = new Vector3 (0, -Screen.height, 0);
 				}
-				page.transform.localScale=new Vector3(AnimationScaleZoomOut,AnimationScaleZoomOut,AnimationScaleZoomOut);
-				tweener = page.transform.DOScale(new Vector3(AnimationScaleZoomOut,AnimationScaleZoomOut,1), AnimationDuration);
+				page.transform.localPosition=new Vector3(0,0,0);
+				page.transform.localScale=new Vector3(AnimationScaleZoomOut,AnimationScaleZoomOut,1);
+				tweener = page.transform.DOScale(new Vector3(1,1,1), AnimationDuration);
                 break;
             default:
                 break;

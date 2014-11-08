@@ -44,6 +44,6 @@ public class UISkillPage : BasePage {
 		//Debug.Log(card.GetCardId());
 		UISkillDetail skillPage = UISkillDetail.Instance;
 		skillPage.SetCardId(card.GetCardId());
-		PageManager.Instance.ShowPage(skillPage);
+		PageManager.Instance.ShowPage(skillPage, PageManager.AnimationType.MiddleZoomIn);
 	}
 }
