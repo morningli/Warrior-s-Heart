@@ -41,7 +41,8 @@ public class UIHeroPage : BasePage {
 			= "气血:" + m_data.physical 
 				+ "\n力量:" + m_data.strength 
 				+ "\n速度:" + m_data.velocity 
-				+ "\n法术:" + m_data.magic;
+				+ "\n法术:" + m_data.magic
+				+ "\n技能:" + m_data.skill;
 	}
 
 	//点击数据更新
@@ -49,11 +50,11 @@ public class UIHeroPage : BasePage {
 	{
 		Debug.Log ("select");
 
-		m_data.physical += 1;
+		/*m_data.physical += 1;
 		m_data.strength += 1;
 		m_data.velocity += 1;
 		m_data.magic += 1;
-		DataManager.Instance.SetConfigData("HeroPage", "HeroInfo", m_data);
+		DataManager.Instance.SetConfigData("HeroPage", "HeroInfo", m_data);*/
 
 		PageManager.Instance.ShowDialog(UISkillPage.Instance, PageManager.AnimationType.NULL);
 	}

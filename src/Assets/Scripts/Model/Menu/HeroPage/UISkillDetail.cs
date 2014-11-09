@@ -34,6 +34,12 @@ public class UISkillDetail : BasePage {
 		m_strCurrentCardId = cardid;
 		//展示卡片数据
 		gameObject.FindChild("SkillInfo").GetComponent<UILabel>().text = "技能["+m_strCurrentCardId+"]";
+
+		HeroData heroData = new HeroData();
+		//修改英雄数据
+		DataManager.Instance.GetConfigData("HeroPage", "HeroInfo", ref heroData);
+		heroData.skill = cardid;
+		DataManager.Instance.SetConfigData("HeroPage", "HeroInfo", heroData);
 	}
 
 	private string m_strCurrentCardId;

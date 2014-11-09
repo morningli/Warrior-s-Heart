@@ -20,6 +20,40 @@ public class DataManager {
 		}
 	}
 
+	public void GetConfigData<T>(string sectionName, string key, ref T data)
+	{
+		string strData = PlayerPrefs.GetString(sectionName + "_" + key);
+
+		try{
+			if (strData.Length != 0)
+			{
+				data = (T)ToObject(strData);
+			}
+		}
+		catch(Exception ex)
+		{
+			Debug.LogError(ex.ToString());
+		}
+
+		//TODO 网络请求
+	}
+
+	public void SetConfigData<T>(string sectionName, string key, T data)
+	{
+		string strData = "";
+		try
+		{
+			strData = ToBytes(data);
+		}
+		catch(Exception ex)
+		{
+			Debug.LogError(ex.ToString());
+		}
+		PlayerPrefs.SetString(sectionName + "_" + key, strData);
+
+		//TODO 网络请求
+	}
+
 	// 将对象序列化成字节数组
 	public static string ToBytes(object obj)
 	{
@@ -46,40 +80,6 @@ public class DataManager {
 			IFormatter f = new BinaryFormatter();
 			return f.Deserialize(s);
 		}
-	}
-
-	public void GetConfigData<T>(string sectionName, string key, ref T data)
-	{
-		string strData = PlayerPrefs.GetString(sectionName + "_" + key);
-		//Debug.Log ("Get config:" + strData);
-
-		try{
-			if (strData.Length != 0)
-			{
-				data = (T)ToObject(strData);
-			}
-		}
-		catch(Exception ex)
-		{
-			Debug.LogError(ex.ToString());
-		}
-		//Debug.Log ("Deserialize:" + data.ToString());
-	}
-
-	public void SetConfigData<T>(string sectionName, string key, T data)
-	{
-		//Debug.Log ("Set data:" + data.ToString());
-		string strData = "";
-		try
-		{
-			strData = ToBytes(data);
-		}
-		catch(Exception ex)
-		{
-			Debug.LogError(ex.ToString());
-		}
-		//Debug.Log ("Set config:" + strData);
-		PlayerPrefs.SetString(sectionName + "_" + key, strData);
 	}
 
 	public static string ToHexString ( byte[] bytes ) // 0xae00cf => "AE00CF "
