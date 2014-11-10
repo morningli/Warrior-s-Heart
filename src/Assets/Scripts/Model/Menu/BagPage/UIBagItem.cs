@@ -28,7 +28,7 @@ public class UIBagItem : MonoBehaviour {
 	public void SetObjectId(string id)
 	{
 		m_strObjectId = id;
-		gameObject.FindChild ("ObjectInfo").GetComponent<UILabel> ().text = "Object" + id;
+		gameObject.FindChild ("Name").GetComponent<UILabel> ().text = "战士" + id;
 	}
 
 	public string GetObjectId()
