@@ -38,10 +38,10 @@ public class BattleEventMessage
 
 public class KnockEventMessage : BattleEventMessage
 {
-    int KnockStrength;
+    public float KnockStrength;
 }
 
 public class HurtEventMessage : BattleEventMessage
 {
-    int Damage;
+    public float Damage;
 }

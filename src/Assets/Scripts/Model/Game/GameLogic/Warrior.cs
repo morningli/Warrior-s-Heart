@@ -13,29 +13,38 @@ public enum WarriorState
 public class Warrior : MonoBehaviour
 {
 
-    public float Knockback;
-    public float AntiKnockback;
-    public float PhysicalAttack;
-    public float PhysicalDefence;
-    public float MagicAttack;
-    public float MagicDefence;
-    public float HitDelay;
-    public float MaxHP;
-    public float MaxMoveSpeed;
+    public float knockback;
+    public float antiKnockback;
+    public float physicalAttack;
+    public float physicalDefence;
+    public float magicAttack;
+    public float magicDefence;
+    public float hitDelay;
+    public float maxHP;
+    public float maxMoveSpeed;
 
 
-    public float HP;
-    public float MoveSpeed;
-    public float AttackSpeed;
-    public float Acceleration;
-    public float AttackDistance;
+    public float hp;
+    public float moveSpeed;
+    public float attackSpeed;
+    public float acceleration;
+    public float attackDistance;
     
-    public float HitRestTime;
+    public float hitRestTime;
     public WarriorState state;
+    public bool isAttacker;
 
 
 
     public OrderedList<BattleEventHandler> FindHitTargetHandler = new OrderedList<BattleEventHandler>();
+
+    void Awake()
+    {
+        knockback = 100;
+        maxMoveSpeed = 50;
+        acceleration = 50;
+        attackDistance = 5;
+    }
 
     public void Attack()
     {
@@ -46,19 +55,28 @@ public class Warrior : MonoBehaviour
             return;
         }
         this.state = WarriorState.Attack;
-        this.HitRestTime = this.HitDelay;
+        this.hitRestTime = this.hitDelay;
         BattleField.Instance.SendEvent(BattleEventType.DidAttack, new List<Warrior>() { this }, null, msg);
         
     }
 
     void Update()
     {
+        int dir = 0;
+        if (isAttacker)
+        {
+            dir = 1;
+        }
+        else
+        {
+            dir = -1;
+        }
         if (state==WarriorState.Attack)
         {
-            this.HitRestTime -= Time.deltaTime;
-            if (this.HitRestTime<=0)
+            this.hitRestTime -= Time.deltaTime;
+            if (this.hitRestTime<=0)
             {
-                this.HitRestTime = this.HitDelay;
+                this.hitRestTime = this.hitDelay;
                 this.state = WarriorState.Idle;
                 this.Hit();
             }
@@ -72,7 +90,8 @@ public class Warrior : MonoBehaviour
 
         if (this.state==WarriorState.Move)
         {
-            this.transform.localPosition = new Vector3(this.transform.localPosition.x + this.MoveSpeed * Time.deltaTime * BattleField.Instance.baseLength, 0, 0);
+            this.moveSpeed += this.acceleration * Time.deltaTime;
+            this.transform.localPosition = new Vector3(this.transform.localPosition.x + dir * this.moveSpeed * Time.deltaTime * BattleField.Instance.baseLength, 0, 0);
         }
 
     }

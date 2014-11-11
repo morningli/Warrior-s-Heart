@@ -31,8 +31,8 @@ public class BattleField : MonoBehaviour
             return m_instance;
         }
     }
-    List<Warrior> m_AttackerList;
-    List<Warrior> m_DefenderList;
+    public List<Warrior> AttackerList;
+    public List<Warrior> DefenderList;
 
     public float baseLength;
 
@@ -45,6 +45,13 @@ public class BattleField : MonoBehaviour
     {
         this.SendEvent(BattleEventType.WillStartBattle);
         /////////////////////////
+        Warrior attacker = ResourceManager.Load("Prefabs/Game/Warrior").GetComponent<Warrior>();
+        this.gameObject.AddChild(attacker.gameObject);
+        attacker.isAttacker = true;
+        AttackerList.Add(attacker);
+        Warrior defender = ResourceManager.Load("Prefabs/Game/Warrior").GetComponent<Warrior>();
+        this.gameObject.AddChild(defender.gameObject);
+        DefenderList.Add(defender);
 
 
 
@@ -96,16 +103,16 @@ public class BattleField : MonoBehaviour
 
     void Update()
     {
-        foreach (Warrior attacker in m_AttackerList)
+        foreach (Warrior attacker in AttackerList)
         {
-            foreach (Warrior defender in m_DefenderList)
+            foreach (Warrior defender in DefenderList)
             {
-                float dis=Mathf.Abs(attacker.transform.localPosition.x-defender.transform.localPosition.x);
-                if (attacker.AttackDistance >= dis)
+                float dis = Mathf.Abs(attacker.transform.localPosition.x - defender.transform.localPosition.x) / baseLength;
+                if (attacker.attackDistance >= dis)
                 {
                     attacker.Attack();
                 }
-                if (defender.AttackDistance >= dis)
+                if (defender.attackDistance >= dis)
                 {
                     defender.Attack();
                 }
