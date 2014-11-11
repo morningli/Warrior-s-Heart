@@ -45,16 +45,24 @@ public class BattleField : MonoBehaviour
     {
         this.SendEvent(BattleEventType.WillStartBattle);
         /////////////////////////
-        Warrior attacker = ResourceManager.Load("Prefabs/Game/Warrior").GetComponent<Warrior>();
-        this.gameObject.AddChild(attacker.gameObject);
-        attacker.isAttacker = true;
-        AttackerList.Add(attacker);
-        Warrior defender = ResourceManager.Load("Prefabs/Game/Warrior").GetComponent<Warrior>();
-        this.gameObject.AddChild(defender.gameObject);
-        DefenderList.Add(defender);
+        for (int i = 0; i < 2; i++)
+        {
+            Warrior attacker = ResourceManager.Load("Prefab/Game/Warrior").GetComponent<Warrior>();
+            this.gameObject.AddChild(attacker.gameObject);
+            attacker.transform.localPosition = new Vector3(-Screen.width/2 + 50+i*20, -Screen.height + 50, 0);
+            attacker.isAttacker = true;
+            AttackerList.Add(attacker);
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            Warrior defender = ResourceManager.Load("Prefab/Game/Warrior").GetComponent<Warrior>();
+            this.gameObject.AddChild(defender.gameObject);
+            defender.transform.localPosition = new Vector3(Screen.width/2 - 50-i*20, -Screen.height + 50, 0);
+            DefenderList.Add(defender);
+        }
 
-
-
+        DidHitHandler_Base didhitbase = new DidHitHandler_Base();
+        this.RegisterEvent(BattleEventType.DidHit, didhitbase);
         /////////////////////////
         this.SendEvent(BattleEventType.DidStartBattle);
     }
@@ -63,7 +71,7 @@ public class BattleField : MonoBehaviour
     //Event
     Dictionary<BattleEventType, OrderedList<BattleEventHandler>> EventDic = new Dictionary<BattleEventType, OrderedList<BattleEventHandler>>();
 
-    public void RegisterEvent(BattleEventType define, int priority, BattleEventHandler handler)
+    public void RegisterEvent(BattleEventType define, BattleEventHandler handler)
     {
         if (!EventDic.ContainsKey(define))
         {
@@ -108,11 +116,11 @@ public class BattleField : MonoBehaviour
             foreach (Warrior defender in DefenderList)
             {
                 float dis = Mathf.Abs(attacker.transform.localPosition.x - defender.transform.localPosition.x) / baseLength;
-                if (attacker.attackDistance >= dis)
+                if (attacker.state!=WarriorState.Attack&&attacker.attackDistance >= dis)
                 {
                     attacker.Attack();
                 }
-                if (defender.attackDistance >= dis)
+                if (defender.state != WarriorState.Attack && defender.attackDistance >= dis)
                 {
                     defender.Attack();
                 }

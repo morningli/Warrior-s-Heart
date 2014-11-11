@@ -40,10 +40,12 @@ public class Warrior : MonoBehaviour
 
     void Awake()
     {
-        knockback = 100;
-        maxMoveSpeed = 50;
-        acceleration = 50;
+        knockback = 5;
+        maxMoveSpeed = 10;
+        acceleration = 2;
         attackDistance = 5;
+        hitDelay = 0.1f;
+        this.FindHitTargetHandler.Add(new FindHitTargetHandler_Base());
     }
 
     public void Attack()

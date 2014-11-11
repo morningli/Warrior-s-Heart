@@ -33,5 +33,6 @@ public class Util
     {
         obj.transform.parent = parent.transform;
         obj.transform.localScale = new Vector3(1, 1, 1);
+        obj.transform.localPosition = new Vector3(0, 0, 0);
     }
 }

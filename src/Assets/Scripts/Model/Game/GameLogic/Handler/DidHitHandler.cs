@@ -6,6 +6,10 @@ public class DidHitHandler_Base : BattleEventHandler
 {
     public override object HandleEvent(List<Warrior> sponsors = null, List<Warrior> responders = null, object param0 = null, object param1 = null, object param2 = null, object param3 = null)
     {
+        if (responders.Count==0)
+        {
+            return null;
+        }
         KnockEventMessage knockmsg = new KnockEventMessage();
         knockmsg.KnockStrength = 0;
         foreach (Warrior item in sponsors)
@@ -16,6 +20,7 @@ public class DidHitHandler_Base : BattleEventHandler
         if (knockmsg.ContinueAction)
         {
             BattleField.Instance.SendEvent(BattleEventType.DidKnock, sponsors, responders, knockmsg);
+            responders[0].moveSpeed = -knockmsg.KnockStrength;
         }
         
 
