@@ -28,7 +28,7 @@ public class UIBagPage : BasePage {
 
 			m_ItemList.Add(item);
 		}
-
+		/*
 		for (int i = 0; i < 3; ++i)
 		{
 			UISortedLabel label = UISortedLabel.Instance;
@@ -40,12 +40,85 @@ public class UIBagPage : BasePage {
 			gameObject.FindChild("LabelList").AddChild(label.gameObject);
 
 			UIEventListener.Get(label.gameObject).onClick = OnClickForBagLabel;
-		}
+		}*/
+
 
 		//gameObject.FindChild("BagList").GetComponent<UIScrollView>().ResetPosition();
+
+		UIEventListener.Get (gameObject.FindChild("LabelAll")).onClick = OnClickForLabelAll;
+		UIEventListener.Get (gameObject.FindChild("LabelWarrior")).onClick = OnClickForLabelWarrior;
+		UIEventListener.Get (gameObject.FindChild("LabeSorcerer")).onClick = OnClickForLabeSorcerer;
+		UIEventListener.Get (gameObject.FindChild("LabelArcher")).onClick = OnClickForLabelArcher;
+	}
+
+	void OnClickForLabelAll(GameObject bagLabel)
+	{
+		for (int i = 0; i < m_ItemList.Count; ++i)
+		{
+			UIBagItem item = m_ItemList[i] as UIBagItem;
+			item.gameObject.SetActiveRecursively(true);
+		}
+		gameObject.FindChild("Grid").GetComponent<UIGrid> ().Reposition();
+	}
+
+	void OnClickForLabelWarrior(GameObject bagLabel)
+	{
+		for (int i = 0; i < m_ItemList.Count; ++i)
+		{
+			UIBagItem item = m_ItemList[i] as UIBagItem;
+			int iCur = int.Parse(item.GetObjectId());
+			
+			if (iCur % 2 != 0)
+			{
+				item.gameObject.SetActiveRecursively(false);
+			}
+			else
+			{
+				item.gameObject.SetActiveRecursively(true);
+			}
+		}
+		gameObject.FindChild("Grid").GetComponent<UIGrid> ().Reposition();
+	}
+
+	void OnClickForLabeSorcerer(GameObject bagLabel)
+	{
+		for (int i = 0; i < m_ItemList.Count; ++i)
+		{
+			UIBagItem item = m_ItemList[i] as UIBagItem;
+			int iCur = int.Parse(item.GetObjectId());
+			
+			if (iCur % 3 != 0)
+			{
+				item.gameObject.SetActiveRecursively(false);
+			}
+			else
+			{
+				item.gameObject.SetActiveRecursively(true);
+			}
+		}
+		gameObject.FindChild("Grid").GetComponent<UIGrid> ().Reposition();
+	}
+
+	void OnClickForLabelArcher(GameObject bagLabel)
+	{
+		for (int i = 0; i < m_ItemList.Count; ++i)
+		{
+			UIBagItem item = m_ItemList[i] as UIBagItem;
+			int iCur = int.Parse(item.GetObjectId());
+			
+			if (iCur % 4 != 0)
+			{
+				item.gameObject.SetActiveRecursively(false);
+			}
+			else
+			{
+				item.gameObject.SetActiveRecursively(true);
+			}
+		}
+		gameObject.FindChild("Grid").GetComponent<UIGrid> ().Reposition();
 	}
 	
-	void OnClickForBagLabel(GameObject bagLabel)
+	/*void OnClickForBagLabel(GameObject bagLabel)
 	{
 		UISortedLabel label = bagLabel.GetComponent<UISortedLabel>();
 		int iId = int.Parse(label.GetLabelId());
@@ -67,5 +140,5 @@ public class UIBagPage : BasePage {
 		gameObject.FindChild("Grid").GetComponent<UIGrid> ().Reposition();
 
 		Debug.Log ("select " + label.GetLabelId());
-	}
+	}*/
 }
