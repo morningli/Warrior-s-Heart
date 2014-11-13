@@ -28,7 +28,20 @@ public class UIBagItem : MonoBehaviour {
 	public void SetObjectId(string id)
 	{
 		m_strObjectId = id;
-		gameObject.FindChild ("Name").GetComponent<UILabel> ().text = "战士" + id;
+		//gameObject.FindChild ("Name").GetComponent<UILabel> ().text = "战士" + id;
+
+		//获取战士信息
+		Soldier soldier = BagDataMrg.Instance.FindSoldier(id);
+		if (soldier != null)
+		{
+			gameObject.FindChild ("Name").GetComponent<UILabel> ().text = soldier.name;
+			gameObject.FindChild ("Level").GetComponent<UILabel> ().text = soldier.level.ToString();
+			gameObject.FindChild ("AttributeIcon").GetComponent<UISprite> ().spriteName = soldier.TypeIcon;
+			gameObject.FindChild ("Logo").GetComponent<UISprite> ().spriteName = soldier.icon;
+			gameObject.FindChild ("LogoBackGround").GetComponent<UISprite> ().spriteName = soldier.QualityIcon;
+
+			gameObject.FindChild ("ButtonLabel").GetComponent<UILabel> ().text = soldier.FightButtonString;
+		}
 	}
 
 	public string GetObjectId()

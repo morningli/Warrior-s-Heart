@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class UIBagPage : BasePage {
 	static UIBagPage m_instance;
@@ -15,35 +16,17 @@ public class UIBagPage : BasePage {
 		}
 	}
 
-	ArrayList m_ItemList = new ArrayList();
+	Dictionary<string, UIBagItem> m_ItemHash = new Dictionary<string, UIBagItem>();
 
 	void Awake()
 	{
-		for (int i = 0; i < 19; ++i)
+		foreach (string id in BagDataMrg.Instance.soldier_all)
 		{
 			UIBagItem item = UIBagItem.Instance;
-			item.SetObjectId(i.ToString());
-
+			item.SetObjectId(id);
 			gameObject.FindChild("Grid").AddChild(item.gameObject);
-
-			m_ItemList.Add(item);
+			m_ItemHash.Add(id, item);
 		}
-		/*
-		for (int i = 0; i < 3; ++i)
-		{
-			UISortedLabel label = UISortedLabel.Instance;
-			label.SetLabelId(i.ToString());
-			if (i == 0)
-			{
-				label.GetComponent<UIToggle> ().startsActive = true;
-			}
-			gameObject.FindChild("LabelList").AddChild(label.gameObject);
-
-			UIEventListener.Get(label.gameObject).onClick = OnClickForBagLabel;
-		}*/
-
-
-		//gameObject.FindChild("BagList").GetComponent<UIScrollView>().ResetPosition();
 
 		UIEventListener.Get (gameObject.FindChild("LabelAll")).onClick = OnClickForLabelAll;
 		UIEventListener.Get (gameObject.FindChild("LabelWarrior")).onClick = OnClickForLabelWarrior;
@@ -53,69 +36,74 @@ public class UIBagPage : BasePage {
 
 	void OnClickForLabelAll(GameObject bagLabel)
 	{
-		for (int i = 0; i < m_ItemList.Count; ++i)
+		foreach (UIBagItem bagItem in m_ItemHash.Values)
 		{
-			UIBagItem item = m_ItemList[i] as UIBagItem;
-			item.gameObject.SetActiveRecursively(true);
+			bagItem.gameObject.SetActiveRecursively(false);
+		}
+
+		foreach (string id in BagDataMrg.Instance.soldier_all)
+		{
+			m_ItemHash[id].gameObject.SetActiveRecursively(true);
 		}
 		gameObject.FindChild("Grid").GetComponent<UIGrid> ().Reposition();
+
+		/*Vector3 vec = gameObject.FindChild("BagList").GetComponent<Transform> ().localPosition;
+		vec.y = 0;
+		gameObject.FindChild("BagList").GetComponent<Transform> ().localPosition = vec;*/
 	}
 
 	void OnClickForLabelWarrior(GameObject bagLabel)
 	{
-		for (int i = 0; i < m_ItemList.Count; ++i)
+		foreach (UIBagItem bagItem in m_ItemHash.Values)
 		{
-			UIBagItem item = m_ItemList[i] as UIBagItem;
-			int iCur = int.Parse(item.GetObjectId());
-			
-			if (iCur % 2 != 0)
-			{
-				item.gameObject.SetActiveRecursively(false);
-			}
-			else
-			{
-				item.gameObject.SetActiveRecursively(true);
-			}
+			bagItem.gameObject.SetActiveRecursively(false);
+		}
+		
+		foreach (string id in BagDataMrg.Instance.soldier_warrior)
+		{
+			m_ItemHash[id].gameObject.SetActiveRecursively(true);
 		}
 		gameObject.FindChild("Grid").GetComponent<UIGrid> ().Reposition();
+
+		/*Vector3 vec = gameObject.FindChild("BagList").GetComponent<Transform> ().localPosition;
+		vec.y = 0;
+		gameObject.FindChild("BagList").GetComponent<Transform> ().localPosition = vec;*/
 	}
 
 	void OnClickForLabeSorcerer(GameObject bagLabel)
 	{
-		for (int i = 0; i < m_ItemList.Count; ++i)
+		foreach (UIBagItem bagItem in m_ItemHash.Values)
 		{
-			UIBagItem item = m_ItemList[i] as UIBagItem;
-			int iCur = int.Parse(item.GetObjectId());
-			
-			if (iCur % 3 != 0)
-			{
-				item.gameObject.SetActiveRecursively(false);
-			}
-			else
-			{
-				item.gameObject.SetActiveRecursively(true);
-			}
+			bagItem.gameObject.SetActiveRecursively(false);
+		}
+		
+		foreach (string id in BagDataMrg.Instance.soldier_sorcerer)
+		{
+			m_ItemHash[id].gameObject.SetActiveRecursively(true);
 		}
 		gameObject.FindChild("Grid").GetComponent<UIGrid> ().Reposition();
+
+		/*Vector3 vec = gameObject.FindChild("BagList").GetComponent<Transform> ().localPosition;
+		vec.y = 0;
+		gameObject.FindChild("BagList").GetComponent<Transform> ().localPosition = vec;*/
 	}
 
 	void OnClickForLabelArcher(GameObject bagLabel)
 	{
-		for (int i = 0; i < m_ItemList.Count; ++i)
+		foreach (UIBagItem bagItem in m_ItemHash.Values)
 		{
-			UIBagItem item = m_ItemList[i] as UIBagItem;
-			int iCur = int.Parse(item.GetObjectId());
-			
-			if (iCur % 4 != 0)
-			{
-				item.gameObject.SetActiveRecursively(false);
-			}
-			else
-			{
-				item.gameObject.SetActiveRecursively(true);
-			}
+			bagItem.gameObject.SetActiveRecursively(false);
+		}
+		
+		foreach (string id in BagDataMrg.Instance.soldier_archer)
+		{
+			m_ItemHash[id].gameObject.SetActiveRecursively(true);
 		}
 		gameObject.FindChild("Grid").GetComponent<UIGrid> ().Reposition();
+
+		/*Vector3 vec = gameObject.FindChild("BagList").GetComponent<Transform> ().localPosition;
+		vec.y = 0;
+		gameObject.FindChild("BagList").GetComponent<Transform> ().localPosition = vec;*/
 	}
 	
 	/*void OnClickForBagLabel(GameObject bagLabel)
