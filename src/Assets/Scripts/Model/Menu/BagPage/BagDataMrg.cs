@@ -24,60 +24,9 @@ public class BagDataMrg{
 			soldier.IconNumber = i;
 			soldier.introduction = "帅的一塌糊涂";
 
-			switch (soldier.type)
-			{
-			case SoldierType.enum_soldier_type_warrior: 	//近
-				soldier_warrior.Add(soldier.id);
-				break;
-			case SoldierType.enum_soldier_type_sorcerer:	//法
-				soldier_sorcerer.Add(soldier.id);
-				break;
-			case SoldierType.enum_soldier_type_archer:		//远
-				soldier_archer.Add(soldier.id);
-				break;
-			}
-			soldier_all.Add(soldier.id);
-
-			army.Conscribe(ref soldier);
+			inventory.AddBagItem(soldier);
 		}
 	}
 
-	public Soldier FindSoldier(string soldierId)
-	{
-		foreach (Soldier soldier in army.soldiers)
-		{
-			if (soldier.id == soldierId)
-			{
-				return soldier;
-			}
-		}
-		return null;
-	}
-
-	public void FireSoldier(string soldierId)
-	{
-		Soldier soldier = FindSoldier(soldierId);
-
-		switch (soldier.type)
-		{
-		case SoldierType.enum_soldier_type_warrior: 	//近
-			soldier_warrior.Remove(soldier.id);
-			break;
-		case SoldierType.enum_soldier_type_sorcerer:	//法
-			soldier_sorcerer.Remove(soldier.id);
-			break;
-		case SoldierType.enum_soldier_type_archer:		//远
-			soldier_archer.Remove(soldier.id);
-			break;
-		}
-		soldier_all.Remove(soldier.id);
-		army.Fire(ref soldier);
-	}
-
-	public List<string> soldier_all = new List<string>();
-	public List<string> soldier_warrior = new List<string>();
-	public List<string> soldier_sorcerer = new List<string>();
-	public List<string> soldier_archer = new List<string>();
-
-	public Army army = new Army();
+	public Inventory inventory = new Inventory();
 }

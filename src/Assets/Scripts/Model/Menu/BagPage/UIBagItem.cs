@@ -2,21 +2,17 @@
 using System.Collections;
 
 public class UIBagItem : MonoBehaviour {
-	static int itemAdd = 1;
+
 	public static UIBagItem Instance
 	{
 		get
 		{
-			UIBagItem item = ResourceManager.Load("Prefab/Menu/BagPage/BagItem").GetComponent<UIBagItem>();
-			item.m_itemId = itemAdd++;
-			return item;
+			return ResourceManager.Load("Prefab/Menu/BagPage/BagItem").GetComponent<UIBagItem>();
 		}
 	}
 
 	void Awake()
 	{
-		gameObject.GetComponent<UIToggle>().group = m_itemGroup;
-
 		UIEventListener.Get (gameObject.FindChild("EquipButton")).onClick = OnClickForEuip;
 	}
 
@@ -32,7 +28,11 @@ public class UIBagItem : MonoBehaviour {
 		if (m_soldier != null)
 		{
 			gameObject.FindChild ("Name").GetComponent<UILabel> ().text = m_soldier.name;
-			gameObject.FindChild ("Level").GetComponent<UILabel> ().text = m_soldier.level.ToString();
+			gameObject.FindChild ("Name").GetComponent<UILabel> ().color = m_soldier.TypeColor;
+
+			gameObject.FindChild ("Level").GetComponent<UILabel> ().text = "+" + m_soldier.level.ToString();
+			gameObject.FindChild ("Level").GetComponent<UILabel> ().color = m_soldier.TypeColor;
+
 			gameObject.FindChild ("AttributeIcon").GetComponent<UISprite> ().spriteName = m_soldier.TypeIcon;
 			gameObject.FindChild ("Logo").GetComponent<UISprite> ().spriteName = m_soldier.icon;
 			gameObject.FindChild ("LogoBackGround").GetComponent<UISprite> ().spriteName = m_soldier.QualityIcon;
@@ -47,7 +47,7 @@ public class UIBagItem : MonoBehaviour {
 			return m_soldier.id;
 		}
 		set{
-			m_soldier = BagDataMrg.Instance.FindSoldier(value);
+			m_soldier = (Soldier)BagDataMrg.Instance.inventory.FindBagItem(value);
 			ShowSoldier();
 
 		}
@@ -57,24 +57,6 @@ public class UIBagItem : MonoBehaviour {
 	{
 		get{
 			return m_soldier;
-		}
-	}
-
-	public int ItemId
-	{
-		get{
-			return m_itemId;
-		}
-	}
-
-	public int ItemGroup
-	{
-		get{
-			return m_itemGroup - 100;
-		}
-		set{
-			m_itemGroup = value + 100;
-			gameObject.GetComponent<UIToggle>().group = m_itemGroup;
 		}
 	}
 
@@ -88,7 +70,5 @@ public class UIBagItem : MonoBehaviour {
 		}
 	}
 
-	int m_itemId;
-	int m_itemGroup = 100;
 	Soldier m_soldier;
 }

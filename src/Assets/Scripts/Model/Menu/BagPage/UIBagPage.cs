@@ -16,26 +16,14 @@ public class UIBagPage : BasePage {
 		}
 	}
 
-	Dictionary<int, UIBagItem> m_ItemHash = new Dictionary<int, UIBagItem>();
-
-	List<int> m_itemListAll = new List<int>();
-	List<int> m_itemListWarrior = new List<int>();
-	List<int> m_itemListSorcerer = new List<int>();
-	List<int> m_itemListArcher = new List<int>();
+	Dictionary<string, UIBagItem> m_ItemHash = new Dictionary<string, UIBagItem>();
 
 	UIBagItem current_choose_item;
 	UIBagItem next_possible_item;
-	ItemListType current_choose_item_list;
 
-	enum ItemListType
-	{
-		ItemListTypeAll,
-		ItemListTypeWarrior,
-		ItemListTypeSorcerer,
-		ItemListTypeArcher,
-	};
+	DataType current_choose_item_list;
 
-	ItemListType ItemListActive
+	DataType ItemListActive
 	{
 		get{
 			return current_choose_item_list;
@@ -43,66 +31,37 @@ public class UIBagPage : BasePage {
 		set{
 			current_choose_item_list = value;
 
-			switch (current_choose_item_list)
+			current_choose_item = null;
+			next_possible_item = null;
+
+			foreach (UIBagItem item in m_ItemHash.Values)
 			{
-			case ItemListType.ItemListTypeWarrior:
+				if (BagDataMrg.Instance.inventory.bagItemClassify[current_choose_item_list].Contains(item.ObjectId))
 				{
-					gameObject.FindChild("GridAll").SetActive(false);
-					gameObject.FindChild("GridWarrior").SetActive(true);
-					gameObject.FindChild("GridSorcerer").SetActive(false);
-					gameObject.FindChild("GridArcher").SetActive(false);
+					item.gameObject.SetActive(true);
+					gameObject.FindChild("BagList").AddChild(item.gameObject);
 
-					int itemId = m_itemListWarrior.Count > 0 ? m_itemListWarrior[0] : -1;
-					if (m_ItemHash.ContainsKey(itemId))
+					if (current_choose_item == null)
 					{
-						SetCurrentItem(m_ItemHash[itemId]);
+						current_choose_item = item;
+					}
+					else if (next_possible_item = null)
+					{
+						next_possible_item = item;
 					}
 				}
-				break;
-			case ItemListType.ItemListTypeSorcerer:
+				else
 				{
-					gameObject.FindChild("GridAll").SetActive(false);
-					gameObject.FindChild("GridWarrior").SetActive(false);
-					gameObject.FindChild("GridSorcerer").SetActive(true);
-					gameObject.FindChild("GridArcher").SetActive(false);
-
-					int itemId = m_itemListSorcerer.Count > 0 ? m_itemListSorcerer[0] : -1;
-					if (m_ItemHash.ContainsKey(itemId))
-					{
-						SetCurrentItem(m_ItemHash[itemId]);
-					}
+					item.gameObject.SetActive(false);
+					gameObject.FindChild("BufferList").AddChild(item.gameObject);
 				}
-				break;
-			case ItemListType.ItemListTypeArcher:
-				{
-					gameObject.FindChild("GridAll").SetActive(false);
-					gameObject.FindChild("GridWarrior").SetActive(false);
-					gameObject.FindChild("GridSorcerer").SetActive(false);
-					gameObject.FindChild("GridArcher").SetActive(true);
-
-					int itemId = m_itemListArcher.Count > 0 ? m_itemListArcher[0] : -1;
-					if (m_ItemHash.ContainsKey(itemId))
-					{
-						SetCurrentItem(m_ItemHash[itemId]);
-					}
-				}
-				break;
-			case ItemListType.ItemListTypeAll:
-				{
-					gameObject.FindChild("GridAll").SetActive(true);
-					gameObject.FindChild("GridWarrior").SetActive(false);
-					gameObject.FindChild("GridSorcerer").SetActive(false);
-					gameObject.FindChild("GridArcher").SetActive(false);
-					
-					int itemId = m_itemListAll.Count > 0 ? m_itemListAll[0] : -1;
-					if (m_ItemHash.ContainsKey(itemId))
-					{
-						SetCurrentItem(m_ItemHash[itemId]);
-					}
-				}
-				break;
-			default:break;
 			}
+
+			//刷新界面
+			gameObject.FindChild("BagList").GetComponent<UIGrid> ().Reposition();
+			gameObject.FindChild("BagList").GetComponent<UIScrollView> ().ResetPosition();
+
+			SetCurrentItem(current_choose_item);
 		}
 	}
 
@@ -145,8 +104,11 @@ public class UIBagPage : BasePage {
 		
 		gameObject.FindChild("DetailLogo").GetComponent<UISprite>().spriteName = "HOW_npc1";
 		gameObject.FindChild("DetailName").GetComponent<UILabel>().text = soldier.name;
+		gameObject.FindChild("DetailName").GetComponent<UILabel> ().color = soldier.TypeColor;
+
 		gameObject.FindChild("DetailAttributeIcon").GetComponent<UISprite>().spriteName = soldier.TypeIcon;
-		gameObject.FindChild("DetailLevel").GetComponent<UILabel>().text = soldier.level.ToString();
+		gameObject.FindChild("DetailLevel").GetComponent<UILabel>().text = "+" + soldier.level.ToString();
+		gameObject.FindChild("DetailLevel").GetComponent<UILabel> ().color = soldier.TypeColor;
 		
 		gameObject.FindChild("DetailBrief").GetComponent<UILabel>().text = soldier.introduction;
 		
@@ -157,99 +119,32 @@ public class UIBagPage : BasePage {
 				+ "法术 ： " +soldier.power + "\n"; 
 
 		//设置下一个元素
-		switch (ItemListActive)
-		{	
-		case ItemListType.ItemListTypeWarrior:
-			next_possible_item = m_ItemHash[m_itemListWarrior[GetNextItemInList(m_itemListWarrior, current_choose_item.ItemId)]];
-			break;
-		case ItemListType.ItemListTypeSorcerer:
-			next_possible_item = m_ItemHash[m_itemListSorcerer[GetNextItemInList(m_itemListSorcerer, current_choose_item.ItemId)]];
-			break;
-		case ItemListType.ItemListTypeArcher:
-			next_possible_item = m_ItemHash[m_itemListArcher[GetNextItemInList(m_itemListArcher, current_choose_item.ItemId)]];
-			break;
-		case ItemListType.ItemListTypeAll:
-			next_possible_item = m_ItemHash[m_itemListAll[GetNextItemInList(m_itemListAll, current_choose_item.ItemId)]];
-			break;
-		default:break;
-		}
+		List<string> dataList = BagDataMrg.Instance.inventory.bagItemClassify[ItemListActive];
+		next_possible_item = m_ItemHash[dataList[GetNextItemInList(dataList, current_choose_item.ObjectId)]];
 	}
 
 	void SetItemListAll()
 	{
-		foreach (string id in BagDataMrg.Instance.soldier_all)
+		foreach (string id in BagDataMrg.Instance.inventory.bagItemClassify[DataType.EnumDataType_Soldier_All])
 		{
-			UIBagItem item = UIBagItem.Instance;
-
-			//设置item
-			item.ObjectId = id;
-			item.ItemGroup = (int)ItemListType.ItemListTypeAll;
-			gameObject.FindChild("GridAll").AddChild(item.gameObject);
-			UIEventListener.Get(item.gameObject).onClick = OnClickForItem;
-
-			m_ItemHash.Add(item.ItemId, item);
-			m_itemListAll.Add(item.ItemId);
-		}
-	}
-	void SetItemListWarrior()
-	{
-		foreach (string id in BagDataMrg.Instance.soldier_warrior)
-		{
-			UIBagItem item = UIBagItem.Instance;
-			
-			//设置item
-			item.ObjectId = id;
-			item.ItemGroup = (int)ItemListType.ItemListTypeWarrior;
-			gameObject.FindChild("GridWarrior").AddChild(item.gameObject);
-			UIEventListener.Get(item.gameObject).onClick = OnClickForItem;
-			
-			m_ItemHash.Add(item.ItemId, item);
-			m_itemListWarrior.Add(item.ItemId);
-		}
-	}
-	void SetItemListSorcerer()
-	{
-		foreach (string id in BagDataMrg.Instance.soldier_sorcerer)
-		{
-			UIBagItem item = UIBagItem.Instance;
-			
-			//设置item
-			item.ObjectId = id;
-			item.ItemGroup = (int)ItemListType.ItemListTypeSorcerer;
-			gameObject.FindChild("GridSorcerer").AddChild(item.gameObject);
-			UIEventListener.Get(item.gameObject).onClick = OnClickForItem;
-			
-			m_ItemHash.Add(item.ItemId, item);
-			m_itemListSorcerer.Add(item.ItemId);
-		}
-	}
-	void SetItemListArcher()
-	{
-		foreach (string id in BagDataMrg.Instance.soldier_archer)
-		{
-			UIBagItem item = UIBagItem.Instance;
-			
-			//设置item
-			item.ObjectId = id;
-			item.ItemGroup = (int)ItemListType.ItemListTypeArcher;
-			gameObject.FindChild("GridArcher").AddChild(item.gameObject);
-			UIEventListener.Get(item.gameObject).onClick = OnClickForItem;
-			
-			m_ItemHash.Add(item.ItemId, item);
-			m_itemListArcher.Add(item.ItemId);
+			if (!m_ItemHash.ContainsKey(id))
+			{
+				UIBagItem item = UIBagItem.Instance;
+				//设置item
+				item.ObjectId = id;
+				//gameObject.FindChild("BagList").AddChild(item.gameObject);
+				UIEventListener.Get(item.gameObject).onClick = OnClickForItem;
+				//保存item
+				m_ItemHash.Add(item.ObjectId, item);
+			}
 		}
 	}
 
 	void Awake()
 	{
 		SetItemListAll();
-		SetItemListWarrior();
-		SetItemListSorcerer();
-		SetItemListArcher();
 
-		ItemListActive = ItemListType.ItemListTypeAll;
-
-
+		ItemListActive = DataType.EnumDataType_Soldier_All;
 
 		UIEventListener.Get (gameObject.FindChild("LabelAll")).onClick = OnClickForLabelAll;
 		UIEventListener.Get (gameObject.FindChild("LabelWarrior")).onClick = OnClickForLabelWarrior;
@@ -266,7 +161,7 @@ public class UIBagPage : BasePage {
 
 	void OnClickForButtonFire(GameObject bagItem)
 	{
-		BagDataMrg.Instance.FireSoldier(current_choose_item.ObjectId);
+		BagDataMrg.Instance.inventory.RemoveBagItem(current_choose_item.ObjectId);
 
 		//隐藏当前item
 		if (current_choose_item != null)
@@ -279,41 +174,26 @@ public class UIBagPage : BasePage {
 		}
 
 		//刷新界面
-		switch (ItemListActive)
-		{	
-		case ItemListType.ItemListTypeWarrior:
-			gameObject.FindChild("GridWarrior").GetComponent<UIGrid> ().Reposition();
-			break;
-		case ItemListType.ItemListTypeSorcerer:
-			gameObject.FindChild("GridSorcerer").GetComponent<UIGrid> ().Reposition();
-			break;
-		case ItemListType.ItemListTypeArcher:
-			gameObject.FindChild("GridArcher").GetComponent<UIGrid> ().Reposition();
-			break;
-		case ItemListType.ItemListTypeAll:
-			gameObject.FindChild("GridAll").GetComponent<UIGrid> ().Reposition();
-			break;
-		default:break;
-		}
+		gameObject.FindChild("BagList").GetComponent<UIGrid> ().Reposition();
 	}
 
 	void OnClickForLabelAll(GameObject bagLabel)
 	{
-		ItemListActive = ItemListType.ItemListTypeAll;
+		ItemListActive = DataType.EnumDataType_Soldier_All;
 	}
 
 	void OnClickForLabelWarrior(GameObject bagLabel)
 	{
-		ItemListActive = ItemListType.ItemListTypeWarrior;
+		ItemListActive = DataType.EnumDataType_Soldier_Warrior;
 	}
 
 	void OnClickForLabeSorcerer(GameObject bagLabel)
 	{
-		ItemListActive = ItemListType.ItemListTypeSorcerer;
+		ItemListActive = DataType.EnumDataType_Soldier_Sorcerer;
 	}
 
 	void OnClickForLabelArcher(GameObject bagLabel)
 	{
-		ItemListActive = ItemListType.ItemListTypeArcher;
+		ItemListActive = DataType.EnumDataType_Soldier_Archer;
 	}
 }
