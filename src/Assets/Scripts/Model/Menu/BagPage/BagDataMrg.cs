@@ -22,6 +22,7 @@ public class BagDataMrg{
 			soldier.id = i.ToString();
 			soldier.name = "战士 ["+i.ToString()+"]";
 			soldier.IconNumber = i;
+			soldier.introduction = "帅的一塌糊涂";
 
 			switch (soldier.type)
 			{
@@ -51,6 +52,26 @@ public class BagDataMrg{
 			}
 		}
 		return null;
+	}
+
+	public void FireSoldier(string soldierId)
+	{
+		Soldier soldier = FindSoldier(soldierId);
+
+		switch (soldier.type)
+		{
+		case SoldierType.enum_soldier_type_warrior: 	//近
+			soldier_warrior.Remove(soldier.id);
+			break;
+		case SoldierType.enum_soldier_type_sorcerer:	//法
+			soldier_sorcerer.Remove(soldier.id);
+			break;
+		case SoldierType.enum_soldier_type_archer:		//远
+			soldier_archer.Remove(soldier.id);
+			break;
+		}
+		soldier_all.Remove(soldier.id);
+		army.Fire(ref soldier);
 	}
 
 	public List<string> soldier_all = new List<string>();

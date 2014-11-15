@@ -101,4 +101,9 @@ public class Army
 	{
 		soldiers.Add(soldier);
 	}
+
+	public void Fire(ref Soldier soldier)
+	{
+		soldiers.Remove(soldier);
+	}
 }
