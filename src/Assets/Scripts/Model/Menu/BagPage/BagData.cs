@@ -4,10 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum DataType{
-	EnumDataType_Soldier_All,	//不表示实际类型
-	EnumDataType_Soldier_Warrior,
-	EnumDataType_Soldier_Sorcerer,
-	EnumDataType_Soldier_Archer,
+	EnumDataType_Soldier,	//战士数据
+
+}
+
+public enum DataSubType
+{
+	EnumSubDataType_All,	//表示所有子类型
+
+	//战士专用
+	EnumSubDataType_Soldier_Warrior,
+	EnumSubDataType_Soldier_Sorcerer,
+	EnumSubDataType_Soldier_Archer,
 }
 
 [Serializable]
@@ -16,7 +24,8 @@ public class BagData
 	public string 	id;			//ID
 	public string 	name;		//名字
 	public string 	icon;		//图标,[0,27]对应"Logo"的"未标题-1_03-x"
-	public DataType	type;  		//物品类型,[1,3]对应近、法、远
+	public DataType	type;  		//物品类型
+	public DataSubType subType;	//物品子类型
 
 	public int IconNumber
 	{
@@ -33,7 +42,8 @@ public class BagData
 public class Inventory
 {
 	[NonSerialized]
-	public Dictionary<DataType, List<string> > bagItemClassify = new Dictionary<DataType, List<string> >();
+	public Dictionary<DataType, Dictionary<DataSubType, List<string> > > bagItemClassify 
+		= new Dictionary<DataType, Dictionary<DataSubType, List<string> > >();
 	public List<BagData> bagItemList = new List<BagData>();
 
 	public BagData FindBagItem(string id)
@@ -52,19 +62,46 @@ public class Inventory
 	{
 		bagItemList.Add(item);
 
-		if (!bagItemClassify.ContainsKey(item.type))
-			bagItemClassify[item.type] = new List<string>();
-		bagItemClassify[item.type].Add(item.id);
 
-		if (!bagItemClassify.ContainsKey(DataType.EnumDataType_Soldier_All))
-			bagItemClassify[DataType.EnumDataType_Soldier_All] = new List<string>();
-		bagItemClassify[DataType.EnumDataType_Soldier_All].Add(item.id);
+		if (!bagItemClassify.ContainsKey(item.type))
+			bagItemClassify[item.type] = new Dictionary<DataSubType, List<string> >();
+
+		if (!bagItemClassify[item.type].ContainsKey(item.subType))
+			bagItemClassify[item.type][item.subType] = new List<string>();
+
+		if (!bagItemClassify[item.type].ContainsKey(DataSubType.EnumSubDataType_All))
+			bagItemClassify[item.type][DataSubType.EnumSubDataType_All] = new List<string>();
+
+		//子分类
+		bagItemClassify[item.type][item.subType].Add(item.id);
+		//主分类
+		bagItemClassify[item.type][DataSubType.EnumSubDataType_All].Add(item.id);
 	}
 
 	public void RemoveBagItem(string id)
 	{
-		bagItemClassify[FindBagItem(id).type].Remove(id);
-		bagItemClassify[DataType.EnumDataType_Soldier_All].Remove(id);
+		BagData item = FindBagItem(id);
+
+		List<string> subTypeList = GetClassifyList(item.type, item.subType);
+		if (subTypeList != null)
+		{
+			subTypeList.Remove(id);
+		}
+
+		List<string> allTypeList = GetClassifyList(item.type, DataSubType.EnumSubDataType_All);
+		if (allTypeList != null)
+		{
+			allTypeList.Remove(id);
+		}
+	}
+
+	public List<string> GetClassifyList(DataType type, DataSubType subType)
+	{
+		if (!bagItemClassify.ContainsKey(type))
+			return null;	
+		if (!bagItemClassify[type].ContainsKey(subType))
+			return null;
+		return bagItemClassify[type][subType];
 	}
 }
 
@@ -75,13 +112,13 @@ public class Soldier : BagData
 	{
 		get
 		{
-			switch (type)
+			switch (subType)
 			{
-			case DataType.EnumDataType_Soldier_Warrior: 	//近
+			case DataSubType.EnumSubDataType_Soldier_Warrior: 	//近
 				return "HOW_hero_jin";
-			case DataType.EnumDataType_Soldier_Sorcerer:	//法
+			case DataSubType.EnumSubDataType_Soldier_Sorcerer:	//法
 				return "HOW_hero_fa";
-			case DataType.EnumDataType_Soldier_Archer:		//远
+			case DataSubType.EnumSubDataType_Soldier_Archer:	//远
 				return "HOW_hero_yuan";
 			default:
 				return "HOW_hero_jin";
@@ -93,13 +130,13 @@ public class Soldier : BagData
 	{
 		get
 		{
-			switch (type)
+			switch (subType)
 			{
-			case DataType.EnumDataType_Soldier_Warrior: 	//近
+			case DataSubType.EnumSubDataType_Soldier_Warrior: 	//近
 				return new Color(255/255f,113/255f,36/255f);
-			case DataType.EnumDataType_Soldier_Sorcerer:	//法
+			case DataSubType.EnumSubDataType_Soldier_Sorcerer:	//法
 					return new Color(61/255f,157/255f,239/255f);
-			case DataType.EnumDataType_Soldier_Archer:		//远
+			case DataSubType.EnumSubDataType_Soldier_Archer:		//远
 				return new Color(9/255f,160/255f,84/255f);
 			default:
 				return new Color(255/255f,113/255f,36/255f);
@@ -137,7 +174,8 @@ public class Soldier : BagData
 
 	public Soldier()
 	{
-		type 		= (DataType)Soldier.RandomHelper.Next(1,5);
+		type		= DataType.EnumDataType_Soldier; 		
+		subType 	= (DataSubType)Soldier.RandomHelper.Next(1,5);
 		level 		= Soldier.RandomHelper.Next(1,10);
 		quality 	= Soldier.RandomHelper.Next(1,5);
 

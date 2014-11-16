@@ -21,9 +21,10 @@ public class UIBagPage : BasePage {
 	UIBagItem current_choose_item;
 	UIBagItem next_possible_item;
 
-	DataType current_choose_item_list;
+	DataType	current_choose_type = DataType.EnumDataType_Soldier;
+	DataSubType current_choose_item_list;
 
-	DataType ItemListActive
+	DataSubType ItemListActive
 	{
 		get{
 			return current_choose_item_list;
@@ -36,24 +37,27 @@ public class UIBagPage : BasePage {
 
 			foreach (UIBagItem item in m_ItemHash.Values)
 			{
-				if (BagDataMrg.Instance.inventory.bagItemClassify[current_choose_item_list].Contains(item.ObjectId))
+				List<string> dataList = BagDataMrg.Instance.GetClassifyList(current_choose_type, current_choose_item_list);
+				if (dataList != null)
 				{
-					item.gameObject.SetActive(true);
-					gameObject.FindChild("BagList").AddChild(item.gameObject);
+					if (dataList.Contains(item.ObjectId))
+					{
+						gameObject.FindChild("BagList").AddChild(item.gameObject);
 
-					if (current_choose_item == null)
-					{
-						current_choose_item = item;
+						if (current_choose_item == null)
+						{
+							current_choose_item = item;
+						}
+						else if (next_possible_item = null)
+						{
+							next_possible_item = item;
+						}
+					
 					}
-					else if (next_possible_item = null)
+					else
 					{
-						next_possible_item = item;
+						gameObject.FindChild("BufferList").AddChild(item.gameObject);
 					}
-				}
-				else
-				{
-					item.gameObject.SetActive(false);
-					gameObject.FindChild("BufferList").AddChild(item.gameObject);
 				}
 			}
 
@@ -119,23 +123,27 @@ public class UIBagPage : BasePage {
 				+ "法术 ： " +soldier.power + "\n"; 
 
 		//设置下一个元素
-		List<string> dataList = BagDataMrg.Instance.inventory.bagItemClassify[ItemListActive];
+		List<string> dataList = BagDataMrg.Instance.GetClassifyList(current_choose_type, ItemListActive);
 		next_possible_item = m_ItemHash[dataList[GetNextItemInList(dataList, current_choose_item.ObjectId)]];
 	}
 
 	void SetItemListAll()
 	{
-		foreach (string id in BagDataMrg.Instance.inventory.bagItemClassify[DataType.EnumDataType_Soldier_All])
+		List<string> dataList = BagDataMrg.Instance.GetClassifyList(current_choose_type, DataSubType.EnumSubDataType_All);
+		if (dataList != null)
 		{
-			if (!m_ItemHash.ContainsKey(id))
+			foreach (string id in dataList)
 			{
-				UIBagItem item = UIBagItem.Instance;
-				//设置item
-				item.ObjectId = id;
-				//gameObject.FindChild("BagList").AddChild(item.gameObject);
-				UIEventListener.Get(item.gameObject).onClick = OnClickForItem;
-				//保存item
-				m_ItemHash.Add(item.ObjectId, item);
+				if (!m_ItemHash.ContainsKey(id))
+				{
+					UIBagItem item = UIBagItem.Instance;
+					//设置item
+					item.ObjectId = id;
+					//gameObject.FindChild("BagList").AddChild(item.gameObject);
+					UIEventListener.Get(item.gameObject).onClick = OnClickForItem;
+					//保存item
+					m_ItemHash.Add(item.ObjectId, item);
+				}
 			}
 		}
 	}
@@ -144,7 +152,7 @@ public class UIBagPage : BasePage {
 	{
 		SetItemListAll();
 
-		ItemListActive = DataType.EnumDataType_Soldier_All;
+		ItemListActive = DataSubType.EnumSubDataType_All;
 
 		UIEventListener.Get (gameObject.FindChild("LabelAll")).onClick = OnClickForLabelAll;
 		UIEventListener.Get (gameObject.FindChild("LabelWarrior")).onClick = OnClickForLabelWarrior;
@@ -161,7 +169,7 @@ public class UIBagPage : BasePage {
 
 	void OnClickForButtonFire(GameObject bagItem)
 	{
-		BagDataMrg.Instance.inventory.RemoveBagItem(current_choose_item.ObjectId);
+		BagDataMrg.Instance.RemoveBagItem(current_choose_item.ObjectId);
 
 		//隐藏当前item
 		if (current_choose_item != null)
@@ -179,21 +187,21 @@ public class UIBagPage : BasePage {
 
 	void OnClickForLabelAll(GameObject bagLabel)
 	{
-		ItemListActive = DataType.EnumDataType_Soldier_All;
+		ItemListActive = DataSubType.EnumSubDataType_All;
 	}
 
 	void OnClickForLabelWarrior(GameObject bagLabel)
 	{
-		ItemListActive = DataType.EnumDataType_Soldier_Warrior;
+		ItemListActive = DataSubType.EnumSubDataType_Soldier_Warrior;
 	}
 
 	void OnClickForLabeSorcerer(GameObject bagLabel)
 	{
-		ItemListActive = DataType.EnumDataType_Soldier_Sorcerer;
+		ItemListActive = DataSubType.EnumSubDataType_Soldier_Sorcerer;
 	}
 
 	void OnClickForLabelArcher(GameObject bagLabel)
 	{
-		ItemListActive = DataType.EnumDataType_Soldier_Archer;
+		ItemListActive = DataSubType.EnumSubDataType_Soldier_Archer;
 	}
 }

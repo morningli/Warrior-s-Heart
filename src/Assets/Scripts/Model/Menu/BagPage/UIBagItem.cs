@@ -47,7 +47,7 @@ public class UIBagItem : MonoBehaviour {
 			return m_soldier.id;
 		}
 		set{
-			m_soldier = (Soldier)BagDataMrg.Instance.inventory.FindBagItem(value);
+			m_soldier = (Soldier)BagDataMrg.Instance.FindBagItem(value);
 			ShowSoldier();
 
 		}

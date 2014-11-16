@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
-public class BagDataMrg{
+public class BagDataMrg : Inventory
+{
 	static BagDataMrg m_instance;
 	public static BagDataMrg Instance
 	{
@@ -24,9 +25,7 @@ public class BagDataMrg{
 			soldier.IconNumber = i;
 			soldier.introduction = "帅的一塌糊涂";
 
-			inventory.AddBagItem(soldier);
+			AddBagItem(soldier);
 		}
 	}
-
-	public Inventory inventory = new Inventory();
 }
