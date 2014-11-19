@@ -42,6 +42,7 @@ public class UIBagPage : BasePage {
 				{
 					if (dataList.Contains(item.ObjectId))
 					{
+						item.CurrentFocus = false;
 						gameObject.FindChild("BagList").AddChild(item.gameObject);
 
 						if (current_choose_item == null)
