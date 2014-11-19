@@ -89,7 +89,7 @@ public class UIToggle : UIWidgetContainer
 	public bool value
 	{
 		get { return mIsActive; }
-		set { if (group == 0 || value || optionCanBeNone || !mStarted) Set(value); }
+		set { if (group == 0 || value || optionCanBeNone || !mStarted) Set(value);}
 	}
 
 	[System.Obsolete("Use 'value' instead")]

@@ -42,8 +42,8 @@ public class UIBagPage : BasePage {
 				{
 					if (dataList.Contains(item.ObjectId))
 					{
-						item.CurrentFocus = false;
 						gameObject.FindChild("BagList").AddChild(item.gameObject);
+						item.gameObject.transform.localPosition = new Vector3 (0, 0, 0);
 
 						if (current_choose_item == null)
 						{
@@ -58,6 +58,7 @@ public class UIBagPage : BasePage {
 					else
 					{
 						gameObject.FindChild("BufferList").AddChild(item.gameObject);
+						item.gameObject.transform.localPosition = new Vector3 (0, 0, 0);
 					}
 				}
 			}
