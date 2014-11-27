@@ -21,6 +21,7 @@ public class DidHitHandler_Base : BattleEventHandler
         {
             BattleField.Instance.SendEvent(BattleEventType.DidKnock, sponsors, responders, knockmsg);
             responders[0].moveSpeed = -knockmsg.KnockStrength;
+            responders[0].state = WarriorState.KnockBack;
         }
         
 

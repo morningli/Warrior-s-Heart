@@ -44,7 +44,7 @@ public class BattleField : MonoBehaviour
     public void StartBattle()
     {
         this.SendEvent(BattleEventType.WillStartBattle);
-        /////////////////////////
+        //TEST///////////////////////
         for (int i = 0; i < 2; i++)
         {
             Warrior attacker = ResourceManager.Load("Prefab/Game/Warrior").GetComponent<Warrior>();
@@ -60,7 +60,11 @@ public class BattleField : MonoBehaviour
             defender.transform.localPosition = new Vector3(Screen.width/2 - 50-i*20, -Screen.height + 50, 0);
             DefenderList.Add(defender);
         }
-
+        ///////////////////////////////
+        foreach (Warrior defender in DefenderList)
+        {
+            defender.transform.localScale = new Vector3(-1, 1, 1);
+        }
         DidHitHandler_Base didhitbase = new DidHitHandler_Base();
         this.RegisterEvent(BattleEventType.DidHit, didhitbase);
         /////////////////////////
@@ -100,7 +104,7 @@ public class BattleField : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            Debug.Log("NoDelegateRecvThisEvent:" + define.ToString());
+            //Debug.Log("NoDelegateRecvThisEvent:" + define.ToString());
             return;
         }
         for (int i = 0; i < handlerlist.Count; i++)
@@ -116,11 +120,11 @@ public class BattleField : MonoBehaviour
             foreach (Warrior defender in DefenderList)
             {
                 float dis = Mathf.Abs(attacker.transform.localPosition.x - defender.transform.localPosition.x) / baseLength;
-                if (attacker.state!=WarriorState.Attack&&attacker.attackDistance >= dis)
+                if (attacker.state==WarriorState.Move&&attacker.attackDistance >= dis)
                 {
                     attacker.Attack();
                 }
-                if (defender.state != WarriorState.Attack && defender.attackDistance >= dis)
+                if (defender.state == WarriorState.Move && defender.attackDistance >= dis)
                 {
                     defender.Attack();
                 }
