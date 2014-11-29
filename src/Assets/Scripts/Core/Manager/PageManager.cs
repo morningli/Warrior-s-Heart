@@ -23,6 +23,7 @@ public class PageManager : MonoBehaviour
     }
     BasePage m_currentPage = null;
     BasePage m_nextPage = null;
+    BasePage m_DialogPage = null;
     public BasePage currentPage
     {
         get
@@ -39,7 +40,7 @@ public class PageManager : MonoBehaviour
         m_instance = this;
     }
 
-    void AnimationFinish()
+    void ShowPageAnimationFinish()
     {
         if (m_currentPage!=null)
         {
@@ -48,6 +49,10 @@ public class PageManager : MonoBehaviour
         m_currentPage = m_nextPage;
         m_currentPage.PageDidAppear();
         m_nextPage = null;
+    }
+    void ShowDialogAnimationFinish()
+    {
+        m_DialogPage.PageDidAppear();
     }
     public void ShowPage(BasePage page, AnimationType type = AnimationType.NULL)
     {
@@ -63,7 +68,7 @@ public class PageManager : MonoBehaviour
         {
             case AnimationType.NULL:
 				page.transform.localPosition=new Vector3(0,0,0);
-                AnimationFinish();
+                ShowPageAnimationFinish();
                 break;
             case AnimationType.LeftToRight:
                 if (m_currentPage)
@@ -72,7 +77,7 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.DOLocalMoveX(Screen.width, AnimationDuration);
                 }
 				page.transform.localPosition=new Vector3(-Screen.width,0,0);
-				page.transform.DOLocalMoveX(0, AnimationDuration);
+                tweener = page.transform.DOLocalMoveX(0, AnimationDuration);
 				
                 break;
             case AnimationType.RightToLeft:
@@ -82,7 +87,7 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.DOLocalMoveX(-Screen.width, AnimationDuration);
                 }
 				page.transform.localPosition=new Vector3(Screen.width,0,0);
-				page.transform.DOLocalMoveX(0, AnimationDuration);
+                tweener = page.transform.DOLocalMoveX(0, AnimationDuration);
                 break;
             case AnimationType.TopToBottom:
 				if (m_currentPage)
@@ -91,7 +96,7 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.DOLocalMoveY(Screen.height, AnimationDuration);
 				}
 				page.transform.localPosition=new Vector3(0,-Screen.height,0);
-				page.transform.DOLocalMoveY(0, AnimationDuration);
+                tweener = page.transform.DOLocalMoveY(0, AnimationDuration);
 				break;
             case AnimationType.BottomToTop:
 				if (m_currentPage)
@@ -100,7 +105,7 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.DOLocalMoveY(-Screen.height, AnimationDuration);
 				}
 				page.transform.localPosition=new Vector3(0,Screen.height,0);
-				page.transform.DOLocalMoveY(0, AnimationDuration);
+                tweener = page.transform.DOLocalMoveY(0, AnimationDuration);
 				break;
             case AnimationType.MiddleZoomIn:
 				if (m_currentPage)
@@ -108,7 +113,7 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.localScale=new Vector3(1,1,1);
 				}
 				page.transform.localScale=new Vector3(AnimationScaleZoomIn,AnimationScaleZoomIn,AnimationScaleZoomIn);
-				page.transform.DOScale(new Vector3(AnimationScaleZoomIn,AnimationScaleZoomIn,1), AnimationDuration);
+                tweener = page.transform.DOScale(new Vector3(AnimationScaleZoomIn, AnimationScaleZoomIn, 1), AnimationDuration);
                 break;
             case AnimationType.MiddleZoomOut:
 				if (m_currentPage)
@@ -116,43 +121,72 @@ public class PageManager : MonoBehaviour
 					m_currentPage.transform.localScale=new Vector3(1,1,1);
 				}
 				page.transform.localScale=new Vector3(AnimationScaleZoomOut,AnimationScaleZoomOut,AnimationScaleZoomOut);
-				page.transform.DOScale(new Vector3(AnimationScaleZoomOut,AnimationScaleZoomOut,1), AnimationDuration);
+                tweener = page.transform.DOScale(new Vector3(AnimationScaleZoomOut, AnimationScaleZoomOut, 1), AnimationDuration);
                 break;
             default:
+                Debug.LogError("Unknoew AnimationType");
                 break;
         }
         if (tweener!=null)
         {
-            tweener.onComplete = AnimationFinish;
+            tweener.onComplete = ShowPageAnimationFinish;
         }
     }
 
     public void ShowDialog(BasePage page, AnimationType type = AnimationType.NULL)
     {
         Tweener tweener = null;
+        HideDialog();
+        m_DialogPage = page;
+        page.PageWillAppear();
+        page.PageDidDisappear();
         switch (type)
         {
             case AnimationType.NULL:
+                page.transform.localPosition = new Vector3(0, 0, 0);
                 break;
             case AnimationType.LeftToRight:
+                page.transform.localPosition = new Vector3(-Screen.width, 0, 0);
+                tweener = page.transform.DOLocalMoveX(0, AnimationDuration);
+
                 break;
             case AnimationType.RightToLeft:
+                page.transform.localPosition = new Vector3(Screen.width, 0, 0);
+                tweener = page.transform.DOLocalMoveX(0, AnimationDuration);
                 break;
             case AnimationType.TopToBottom:
+                page.transform.localPosition = new Vector3(0, -Screen.height, 0);
+                tweener = page.transform.DOLocalMoveY(0, AnimationDuration);
                 break;
             case AnimationType.BottomToTop:
+                page.transform.localPosition = new Vector3(0, Screen.height, 0);
+                tweener = page.transform.DOLocalMoveY(0, AnimationDuration);
                 break;
             case AnimationType.MiddleZoomIn:
+                page.transform.localScale = new Vector3(AnimationScaleZoomIn, AnimationScaleZoomIn, AnimationScaleZoomIn);
+                tweener = page.transform.DOScale(new Vector3(AnimationScaleZoomIn, AnimationScaleZoomIn, 1), AnimationDuration);
                 break;
             case AnimationType.MiddleZoomOut:
+                page.transform.localScale = new Vector3(AnimationScaleZoomOut, AnimationScaleZoomOut, AnimationScaleZoomOut);
+                tweener = page.transform.DOScale(new Vector3(AnimationScaleZoomOut, AnimationScaleZoomOut, 1), AnimationDuration);
                 break;
             default:
+                Debug.LogError("Unknoew AnimationType");
                 break;
+        }
+        if (tweener != null)
+        {
+            tweener.onComplete = ShowDialogAnimationFinish;
         }
     }
 
     public void HideDialog()
     {
-
+        if (m_DialogPage)
+        {
+            m_DialogPage.PageWillDisappear();
+            m_DialogPage.PageDidDisappear();
+            GameObject.Destroy(m_DialogPage);
+        }
     }
 }
