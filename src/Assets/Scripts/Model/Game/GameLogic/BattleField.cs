@@ -34,12 +34,10 @@ public class BattleField : MonoBehaviour
     public List<Warrior> AttackerList;
     public List<Warrior> DefenderList;
 
-    public float baseLength;
 
     void Awake()
     {
         m_instance = this;
-        baseLength = Screen.currentResolution.width / 100.0f;
     }
     public void StartBattle()
     {
@@ -49,17 +47,35 @@ public class BattleField : MonoBehaviour
         {
             Warrior attacker = ResourceManager.Load("Prefab/Game/Warrior").GetComponent<Warrior>();
             this.gameObject.AddChild(attacker.gameObject);
-            attacker.transform.localPosition = new Vector3(-Screen.width/2 + 50+i*20, -Screen.height + 50, 0);
+            attacker.transform.localPosition = new Vector3(-Screen.width/2 + 50+i*20, -Screen.height/2 + 80, 0);
             attacker.isAttacker = true;
+            attacker.name = "attacker" + i;
             AttackerList.Add(attacker);
         }
+        for (int i = 0; i < AttackerList.Count; i++)
+        {
+            for (int j = i + 1; j < AttackerList.Count; j++)
+            {
+                Physics.IgnoreCollision(AttackerList[i].collider, AttackerList[j].collider);
+            }
+        }
+
         for (int i = 0; i < 2; i++)
         {
             Warrior defender = ResourceManager.Load("Prefab/Game/Warrior").GetComponent<Warrior>();
             this.gameObject.AddChild(defender.gameObject);
-            defender.transform.localPosition = new Vector3(Screen.width/2 - 50-i*20, -Screen.height + 50, 0);
+            defender.transform.localPosition = new Vector3(Screen.width / 2 - 50 + i * 20, -Screen.height / 2 + 80, 0);
+            defender.name = "defender" + i;
             DefenderList.Add(defender);
         }
+        for (int i = 0; i < DefenderList.Count; i++)
+        {
+            for (int j = i + 1; j < DefenderList.Count; j++)
+            {
+                Physics.IgnoreCollision(DefenderList[i].collider, DefenderList[j].collider);
+            }
+        }
+
         ///////////////////////////////
         foreach (Warrior defender in DefenderList)
         {
@@ -119,7 +135,7 @@ public class BattleField : MonoBehaviour
         {
             foreach (Warrior defender in DefenderList)
             {
-                float dis = Mathf.Abs(attacker.transform.localPosition.x - defender.transform.localPosition.x) / baseLength;
+                float dis = Mathf.Abs(attacker.transform.localPosition.x - defender.transform.localPosition.x);
                 if (attacker.attackState == AttackState.None && attacker.attackDistance >= dis)
                 {
                     attacker.Attack();

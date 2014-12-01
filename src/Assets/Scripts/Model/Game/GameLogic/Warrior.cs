@@ -30,7 +30,6 @@ public class Warrior : MonoBehaviour
 
 
     public float hp;
-    public float moveSpeed;
     public float attackSpeed;
     public float acceleration;
     public float attackDistance;
@@ -39,11 +38,29 @@ public class Warrior : MonoBehaviour
     public float attackRestTime;
     public AttackState attackState;
     public MoveState moveState;
+
+    public int dir
+    {
+        get
+        {
+            if (isAttacker)
+            {
+                return 1;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+    }
     void UpdateAnimation()
     {
+        
         UISpriteAnimation animation = this.GetComponent<UISpriteAnimation>();
+        animation.framesPerSecond = 30;
         animation.enabled = true;
         animation.loop = true;
+        string lastPrefix = animation.namePrefix;
         if (attackState==AttackState.Attack)
         {
             animation.namePrefix = "attack";
@@ -67,6 +84,10 @@ public class Warrior : MonoBehaviour
                 Debug.LogError("error");
             }
         }
+        if (lastPrefix!=animation.namePrefix)
+        {
+            animation.Reset();
+        }
     }
     public bool isAttacker;
 
@@ -76,10 +97,10 @@ public class Warrior : MonoBehaviour
 
     void Awake()
     {
-        knockback = 5;
-        maxMoveSpeed = 10;
-        acceleration = 2;
-        attackDistance = 5;
+        knockback = 0.5f;
+        maxMoveSpeed = 1.0f;
+        acceleration = 0.2f;
+        attackDistance = 100;
         hitDelay = 0.3f;
         attackInterval = 3;
         this.FindHitTargetHandler.Add(new FindHitTargetHandler_Base());
@@ -106,15 +127,7 @@ public class Warrior : MonoBehaviour
 
     void Update()
     {
-        int dir = 0;
-        if (isAttacker)
-        {
-            dir = 1;
-        }
-        else
-        {
-            dir = -1;
-        }
+
 
         attackRestTime -= Time.deltaTime;
 
@@ -139,7 +152,7 @@ public class Warrior : MonoBehaviour
 
         if (this.moveState == MoveState.Move || this.moveState == MoveState.KnockBack)
         {
-            if (this.moveSpeed > 0)
+            if (this.rigidbody.velocity.x*dir > 0)
             {
                 this.moveState = MoveState.Move;
             }
@@ -147,8 +160,12 @@ public class Warrior : MonoBehaviour
             {
                 this.moveState = MoveState.KnockBack;
             }
-            this.moveSpeed += this.acceleration * Time.deltaTime;
-            this.transform.localPosition = new Vector3(this.transform.localPosition.x + dir * this.moveSpeed * Time.deltaTime * BattleField.Instance.baseLength, 0, 0);
+            this.constantForce.force = new Vector3(dir * acceleration, 0, 0);
+            if (this.rigidbody.velocity.x>maxMoveSpeed)
+            {
+                this.rigidbody.velocity = new Vector3(maxMoveSpeed, 0, 0);
+            }
+            //this.transform.localPosition = new Vector3(this.transform.localPosition.x + dir * this.moveSpeed * Time.deltaTime * BattleField.Instance.baseLength, 0, 0);
         }
         UpdateAnimation();
 

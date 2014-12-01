@@ -13,7 +13,7 @@ public class FindHitTargetHandler_Base : BattleEventHandler
             {
                 foreach (Warrior item in BattleField.Instance.DefenderList)
                 {
-                    float distance = Mathf.Abs(sponsors[0].transform.localPosition.x - item.transform.localPosition.x)/BattleField.Instance.baseLength;
+                    float distance = Mathf.Abs(sponsors[0].transform.localPosition.x - item.transform.localPosition.x);
                     if (sponsors[0].attackDistance>=distance)
                     {
                         responders.Add(item);
@@ -24,7 +24,7 @@ public class FindHitTargetHandler_Base : BattleEventHandler
             {
                 foreach (Warrior item in BattleField.Instance.AttackerList)
                 {
-                    float distance = Mathf.Abs(sponsors[0].transform.localPosition.x - item.transform.localPosition.x) / BattleField.Instance.baseLength;
+                    float distance = Mathf.Abs(sponsors[0].transform.localPosition.x - item.transform.localPosition.x);
                     if (sponsors[0].attackDistance >= distance)
                     {
                         responders.Add(item);

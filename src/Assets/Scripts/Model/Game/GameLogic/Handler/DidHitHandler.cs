@@ -20,8 +20,9 @@ public class DidHitHandler_Base : BattleEventHandler
         if (knockmsg.ContinueAction)
         {
             BattleField.Instance.SendEvent(BattleEventType.DidKnock, sponsors, responders, knockmsg);
-            responders[0].moveSpeed = -knockmsg.KnockStrength;
             responders[0].moveState = MoveState.KnockBack;
+            responders[0].rigidbody.velocity = new Vector3(-knockmsg.KnockStrength * responders[0].dir, 0, 0);
+            Debug.Log(responders[0].name + " beHit");
         }
         
 
