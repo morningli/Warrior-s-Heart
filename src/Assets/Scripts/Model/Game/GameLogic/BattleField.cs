@@ -120,11 +120,11 @@ public class BattleField : MonoBehaviour
             foreach (Warrior defender in DefenderList)
             {
                 float dis = Mathf.Abs(attacker.transform.localPosition.x - defender.transform.localPosition.x) / baseLength;
-                if (attacker.state==WarriorState.Move&&attacker.attackDistance >= dis)
+                if (attacker.attackState == AttackState.None && attacker.attackDistance >= dis)
                 {
                     attacker.Attack();
                 }
-                if (defender.state == WarriorState.Move && defender.attackDistance >= dis)
+                if (defender.attackState == AttackState.None && defender.attackDistance >= dis)
                 {
                     defender.Attack();
                 }

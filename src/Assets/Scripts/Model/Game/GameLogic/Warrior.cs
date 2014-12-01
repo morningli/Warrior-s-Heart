@@ -2,14 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public enum WarriorState
+public enum AttackState
+{
+    None,
+    Attack,
+}
+public enum MoveState
 {
     Idle,
     Move,
-    Attack,
     KnockBack,
 }
-
 
 public class Warrior : MonoBehaviour
 {
@@ -21,6 +24,7 @@ public class Warrior : MonoBehaviour
     public float magicAttack;
     public float magicDefence;
     public float hitDelay;
+    public float attackInterval;
     public float maxHP;
     public float maxMoveSpeed;
 
@@ -32,54 +36,36 @@ public class Warrior : MonoBehaviour
     public float attackDistance;
     
     public float hitRestTime;
-    WarriorState m_state;
-    public WarriorState state
+    public float attackRestTime;
+    public AttackState attackState;
+    public MoveState moveState;
+    void UpdateAnimation()
     {
-        set
+        UISpriteAnimation animation = this.GetComponent<UISpriteAnimation>();
+        animation.enabled = true;
+        animation.loop = true;
+        if (attackState==AttackState.Attack)
         {
-            if (m_state==value)
-            {
-                return;
-            }
-            
-            UISpriteAnimation ani = this.GetComponent<UISpriteAnimation>();
-            ani.framesPerSecond = 10;
-            if (value == WarriorState.Move)
-            {
-                ani.namePrefix = "run";
-                ani.loop = true;
-            }
-            else if (value == WarriorState.Idle)
-            {
-                ani.namePrefix = "standby";
-                ani.loop = true;
-            }
-            else if (value == WarriorState.Attack)
-            {
-                this.hitRestTime = this.hitDelay;
-                ani.namePrefix = "attack";
-                ani.loop = true;
-                
-            }
-            else if (value == WarriorState.KnockBack)
-            {
-                if (m_state == WarriorState.Attack&&this.hitRestTime<0.1f)
-                {
-                    this.Hit();
-                }
-                this.hitRestTime = this.hitDelay;
-                ani.namePrefix = "back";
-                ani.loop = true;
-
-            }
-            ani.Reset();
-            
-            ani.enabled = true;
-            m_state = value;
+            animation.namePrefix = "attack";
         }
-        get
+        else
         {
-            return m_state;
+            if (moveState==MoveState.Idle)
+            {
+                animation.namePrefix = "standby";
+            }
+            else if (moveState==MoveState.Move)
+            {
+                animation.namePrefix = "run";
+            }
+            else if (moveState == MoveState.KnockBack)
+            {
+                animation.namePrefix = "back";
+            }
+            else
+            {
+                Debug.LogError("error");
+            }
         }
     }
     public bool isAttacker;
@@ -94,19 +80,26 @@ public class Warrior : MonoBehaviour
         maxMoveSpeed = 10;
         acceleration = 2;
         attackDistance = 5;
-        hitDelay = 1f;
+        hitDelay = 0.3f;
+        attackInterval = 3;
         this.FindHitTargetHandler.Add(new FindHitTargetHandler_Base());
     }
 
     public void Attack()
     {
+        if (attackRestTime>0)
+        {
+            return;
+        }
+        attackRestTime = attackInterval;
+        hitRestTime = hitDelay;
         BattleEventMessage msg = new BattleEventMessage();
         BattleField.Instance.SendEvent(BattleEventType.WillAttack, new List<Warrior>() { this }, null, msg);
         if (!msg.ContinueAction)
         {
             return;
         }
-        this.state = WarriorState.Attack;
+        this.attackState = AttackState.Attack;
         BattleField.Instance.SendEvent(BattleEventType.DidAttack, new List<Warrior>() { this }, null, msg);
         
     }
@@ -122,37 +115,42 @@ public class Warrior : MonoBehaviour
         {
             dir = -1;
         }
-        if (state==WarriorState.Attack)
+
+        attackRestTime -= Time.deltaTime;
+
+
+
+        if (attackState==AttackState.Attack)
         {
             this.hitRestTime -= Time.deltaTime;
             if (this.hitRestTime<=0.0f)
             {
-                this.hitRestTime = this.hitDelay;
-                this.state = WarriorState.Idle;
+                this.attackState = AttackState.None;
                 this.Hit();
             }
         }
 
-        if (this.state==WarriorState.Idle)
+        if (this.moveState == MoveState.Idle)
         {
-            this.state = WarriorState.Move;
+            this.moveState = MoveState.Move;
         }
 
 
 
-        if (this.state==WarriorState.Move||this.state==WarriorState.KnockBack)
+        if (this.moveState == MoveState.Move || this.moveState == MoveState.KnockBack)
         {
             if (this.moveSpeed > 0)
             {
-                this.state = WarriorState.Move;
+                this.moveState = MoveState.Move;
             }
             else
             {
-                this.state = WarriorState.KnockBack;
+                this.moveState = MoveState.KnockBack;
             }
             this.moveSpeed += this.acceleration * Time.deltaTime;
             this.transform.localPosition = new Vector3(this.transform.localPosition.x + dir * this.moveSpeed * Time.deltaTime * BattleField.Instance.baseLength, 0, 0);
         }
+        UpdateAnimation();
 
     }
     void Hit()
