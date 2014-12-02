@@ -64,7 +64,7 @@ public class BattleField : MonoBehaviour
         {
             Warrior defender = ResourceManager.Load("Prefab/Game/Warrior").GetComponent<Warrior>();
             this.gameObject.AddChild(defender.gameObject);
-            defender.transform.localPosition = new Vector3(Screen.width / 2 - 50 + i * 20, -Screen.height / 2 + 80, 0);
+            defender.transform.localPosition = new Vector3(Screen.width / 2 - 50 - i * 20, -Screen.height / 2 + 80, 0);
             defender.name = "defender" + i;
             DefenderList.Add(defender);
         }

@@ -99,12 +99,12 @@ public class Warrior : MonoBehaviour
 
     void Awake()
     {
-        knockback = 0.5f;
+        knockback = 0.1f;
         maxMoveSpeed = 1.0f;
         acceleration = 0.2f;
         attackDistance = 100;
         hitDelay = 0.3f;
-        attackInterval = 3;
+        attackInterval = 1;
         this.FindHitTargetHandler.Add(new FindHitTargetHandler_Base());
         DidFinishAttackHandler_Melee_Base didfinishattack=new DidFinishAttackHandler_Melee_Base();
         didfinishattack.owner=this;
