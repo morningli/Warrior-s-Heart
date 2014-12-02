@@ -45,7 +45,7 @@ public class BattleField : MonoBehaviour
         //TEST///////////////////////
         for (int i = 0; i < 2; i++)
         {
-            Warrior attacker = ResourceManager.Load("Prefab/Game/Warrior").GetComponent<Warrior>();
+            Warrior attacker = Warrior.Create();
             this.gameObject.AddChild(attacker.gameObject);
             attacker.transform.localPosition = new Vector3(-Screen.width/2 + 50+i*20, -Screen.height/2 + 80, 0);
             attacker.isAttacker = true;
@@ -62,7 +62,7 @@ public class BattleField : MonoBehaviour
 
         for (int i = 0; i < 2; i++)
         {
-            Warrior defender = ResourceManager.Load("Prefab/Game/Warrior").GetComponent<Warrior>();
+            Warrior defender = Warrior.Create();
             this.gameObject.AddChild(defender.gameObject);
             defender.transform.localPosition = new Vector3(Screen.width / 2 - 50 - i * 20, -Screen.height / 2 + 80, 0);
             defender.name = "defender" + i;

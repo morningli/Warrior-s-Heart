@@ -27,6 +27,7 @@ public class Warrior : MonoBehaviour
     public float attackInterval;
     public float maxHP;
     public float maxMoveSpeed;
+    public bool canAttackMove;
 
 
     public float hp;
@@ -94,21 +95,42 @@ public class Warrior : MonoBehaviour
     public bool isAttacker;
 
 
-
+    public static Warrior Create()
+    {
+        return ResourceManager.Load("Prefab/Game/Warrior").GetComponent<Warrior>();
+    }
 
 
     void Awake()
     {
+        //近战
+//         knockback = 0.1f;
+//         maxMoveSpeed = 1.0f;
+//         acceleration = 0.2f;
+//         attackDistance = 100;
+//         hitDelay = 0.3f;
+//         attackInterval = 1;
+//         this.FindHitTargetHandler.Add(new FindHitTargetHandler_Base());
+//         DidFinishAttackHandler_Melee_Base didfinishattack=new DidFinishAttackHandler_Melee_Base();
+//         didfinishattack.owner=this;
+//         BattleField.Instance.RegisterEvent(BattleEventType.DidFinishAttack, didfinishattack);
+//         canAttackMove = true;
+
+
+
+        //远程
         knockback = 0.1f;
         maxMoveSpeed = 1.0f;
         acceleration = 0.2f;
-        attackDistance = 100;
+        attackDistance = 700;
         hitDelay = 0.3f;
         attackInterval = 1;
+        canAttackMove = false;
         this.FindHitTargetHandler.Add(new FindHitTargetHandler_Base());
-        DidFinishAttackHandler_Melee_Base didfinishattack=new DidFinishAttackHandler_Melee_Base();
-        didfinishattack.owner=this;
+        DidFinishAttackHandler_Remote_Base didfinishattack = new DidFinishAttackHandler_Remote_Base();
+        didfinishattack.owner = this;
         BattleField.Instance.RegisterEvent(BattleEventType.DidFinishAttack, didfinishattack);
+        
     }
 
     public void Attack()
@@ -138,10 +160,21 @@ public class Warrior : MonoBehaviour
 
 
 
-        if (attackState==AttackState.Attack)
+
+        if (this.moveState == MoveState.Idle)
         {
+            this.moveState = MoveState.Move;
+        }
+
+
+        if (attackState == AttackState.Attack)
+        {
+            if (!canAttackMove)
+            {
+                this.moveState = MoveState.Idle;
+            }
             this.hitRestTime -= Time.deltaTime;
-            if (this.hitRestTime<=0.0f)
+            if (this.hitRestTime <= 0.0f)
             {
                 this.attackState = AttackState.None;
                 BattleEventMessage msg = new BattleEventMessage();
@@ -153,13 +186,6 @@ public class Warrior : MonoBehaviour
                 BattleField.Instance.SendEvent(BattleEventType.DidFinishAttack, new List<Warrior>() { this }, null, msg);
             }
         }
-
-        if (this.moveState == MoveState.Idle)
-        {
-            this.moveState = MoveState.Move;
-        }
-
-
 
         if (this.moveState == MoveState.Move || this.moveState == MoveState.KnockBack)
         {
@@ -177,6 +203,10 @@ public class Warrior : MonoBehaviour
                 this.rigidbody.velocity = new Vector3(maxMoveSpeed, 0, 0);
             }
             //this.transform.localPosition = new Vector3(this.transform.localPosition.x + dir * this.moveSpeed * Time.deltaTime * BattleField.Instance.baseLength, 0, 0);
+        }
+        else
+        {
+            this.rigidbody.velocity = new Vector3(0, 0, 0);
         }
         UpdateAnimation();
 
