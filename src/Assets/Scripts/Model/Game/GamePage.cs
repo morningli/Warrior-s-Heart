@@ -15,4 +15,8 @@ public class GamePage : BasePage
             return m_instance;
         }
     }
+    public override void PageDidAppear()
+    {
+        BattleField.Instance.StartBattle();
+    }
 }

@@ -5,7 +5,7 @@ public class MenuScene : MonoBehaviour
 {
 	void Start()
 	{
-		PageManager.Instance.ShowPage(ProfilePage.Instance);
+		PageManager.Instance.ShowPage(MainMenuPage.Instance);
 	}
 
     void Update()
