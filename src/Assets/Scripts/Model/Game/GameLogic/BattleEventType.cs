@@ -7,6 +7,8 @@ public enum BattleEventType
     DidStartBattle,
     WillAttack,
     DidAttack,
+    WillFinishAttack,
+    DidFinishAttack,
     WillHit,
     DidHit,
     WillKnock,

@@ -39,6 +39,8 @@ public class Warrior : MonoBehaviour
     public AttackState attackState;
     public MoveState moveState;
 
+    public OrderedList<BattleEventHandler> FindHitTargetHandler = new OrderedList<BattleEventHandler>();
+    public OrderedList<BattleEventHandler> FinishAttackHandler = new OrderedList<BattleEventHandler>();
     public int dir
     {
         get
@@ -93,7 +95,7 @@ public class Warrior : MonoBehaviour
 
 
 
-    public OrderedList<BattleEventHandler> FindHitTargetHandler = new OrderedList<BattleEventHandler>();
+
 
     void Awake()
     {
@@ -104,6 +106,9 @@ public class Warrior : MonoBehaviour
         hitDelay = 0.3f;
         attackInterval = 3;
         this.FindHitTargetHandler.Add(new FindHitTargetHandler_Base());
+        DidFinishAttackHandler_Melee_Base didfinishattack=new DidFinishAttackHandler_Melee_Base();
+        didfinishattack.owner=this;
+        BattleField.Instance.RegisterEvent(BattleEventType.DidFinishAttack, didfinishattack);
     }
 
     public void Attack()
@@ -139,7 +144,13 @@ public class Warrior : MonoBehaviour
             if (this.hitRestTime<=0.0f)
             {
                 this.attackState = AttackState.None;
-                this.Hit();
+                BattleEventMessage msg = new BattleEventMessage();
+                BattleField.Instance.SendEvent(BattleEventType.WillFinishAttack, new List<Warrior>() { this }, null, msg);
+                if (!msg.ContinueAction)
+                {
+                    return;
+                }
+                BattleField.Instance.SendEvent(BattleEventType.DidFinishAttack, new List<Warrior>() { this }, null, msg);
             }
         }
 
