@@ -16,7 +16,12 @@ public enum MoveState
 
 public class Warrior : MonoBehaviour
 {
-
+    //基础属性
+    public float power;
+    public float agility;
+    public float strong;
+    public float intelligence;
+    //属性
     public float knockback;
     public float antiKnockback;
     public float physicalAttack;
@@ -28,18 +33,20 @@ public class Warrior : MonoBehaviour
     public float maxHP;
     public float maxMoveSpeed;
     public bool canAttackMove;
+    
 
-
+    //当前属性
     public float hp;
     public float attackSpeed;
     public float acceleration;
     public float attackDistance;
     
+    //状态
     public float hitRestTime;
     public float attackRestTime;
     public AttackState attackState;
     public MoveState moveState;
-
+    public bool hasEnemyInAttackDistance;
     public OrderedList<BattleEventHandler> FindHitTargetHandler = new OrderedList<BattleEventHandler>();
     public OrderedList<BattleEventHandler> FinishAttackHandler = new OrderedList<BattleEventHandler>();
     public int dir
@@ -110,11 +117,12 @@ public class Warrior : MonoBehaviour
 //         attackDistance = 100;
 //         hitDelay = 0.3f;
 //         attackInterval = 1;
+//         canAttackMove = true;
 //         this.FindHitTargetHandler.Add(new FindHitTargetHandler_Base());
 //         DidFinishAttackHandler_Melee_Base didfinishattack=new DidFinishAttackHandler_Melee_Base();
 //         didfinishattack.owner=this;
 //         BattleField.Instance.RegisterEvent(BattleEventType.DidFinishAttack, didfinishattack);
-//         canAttackMove = true;
+        
 
 
 
@@ -154,25 +162,17 @@ public class Warrior : MonoBehaviour
 
     void Update()
     {
-
-
         attackRestTime -= Time.deltaTime;
-
-
-
-
-        if (this.moveState == MoveState.Idle)
+        /////////////////////////////////////////
+        List<Warrior> sponsors = new List<Warrior>() { this };
+        List<Warrior> responders = new List<Warrior>();
+        if (FindHitTargetHandler.Count > 0)
         {
-            this.moveState = MoveState.Move;
+            FindHitTargetHandler[0].HandleEvent(sponsors, responders);
         }
-
 
         if (attackState == AttackState.Attack)
         {
-            if (!canAttackMove)
-            {
-                this.moveState = MoveState.Idle;
-            }
             this.hitRestTime -= Time.deltaTime;
             if (this.hitRestTime <= 0.0f)
             {
@@ -186,10 +186,25 @@ public class Warrior : MonoBehaviour
                 BattleField.Instance.SendEvent(BattleEventType.DidFinishAttack, new List<Warrior>() { this }, null, msg);
             }
         }
-
-        if (this.moveState == MoveState.Move || this.moveState == MoveState.KnockBack)
+        else
         {
-            if (this.rigidbody.velocity.x*dir > 0)
+            if(responders.Count > 0)
+            {
+                this.Attack();
+            }
+        }
+
+        if (this.moveState == MoveState.Idle)
+        {
+            this.rigidbody.velocity = new Vector3(0, 0, 0);
+            if (responders.Count == 0 || canAttackMove)
+            {
+                this.moveState = MoveState.Move;
+            }
+        }
+        else
+        {
+            if (this.rigidbody.velocity.x * dir > 0)
             {
                 this.moveState = MoveState.Move;
             }
@@ -197,17 +212,21 @@ public class Warrior : MonoBehaviour
             {
                 this.moveState = MoveState.KnockBack;
             }
-            this.constantForce.force = new Vector3(dir * acceleration, 0, 0);
-            if (this.rigidbody.velocity.x>maxMoveSpeed)
+            if (responders.Count > 0 && !canAttackMove)
             {
-                this.rigidbody.velocity = new Vector3(maxMoveSpeed, 0, 0);
+                this.moveState = MoveState.Idle;
             }
-            //this.transform.localPosition = new Vector3(this.transform.localPosition.x + dir * this.moveSpeed * Time.deltaTime * BattleField.Instance.baseLength, 0, 0);
+            else
+            {
+                this.constantForce.force = new Vector3(dir * acceleration, 0, 0);
+                if (this.rigidbody.velocity.x > maxMoveSpeed)
+                {
+                    this.rigidbody.velocity = new Vector3(maxMoveSpeed, 0, 0);
+                }
+            }
+
         }
-        else
-        {
-            this.rigidbody.velocity = new Vector3(0, 0, 0);
-        }
+
         UpdateAnimation();
 
     }

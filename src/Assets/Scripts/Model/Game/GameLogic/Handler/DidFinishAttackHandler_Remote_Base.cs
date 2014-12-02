@@ -10,30 +10,37 @@ public class DidFinishAttackHandler_Remote_Base : BattleEventHandler
         {
             return null;
         }
-        Debug.Log("aa");
         Ammo ammo = Ammo.Create();
         BattleField.Instance.gameObject.AddChild(ammo.gameObject);
-        ammo.transform.localPosition = sponsors[0].transform.localPosition;
+        ammo.transform.localPosition = sponsors[0].transform.localPosition + new Vector3(0, 40, 0);
         int dir = 0;
         //忽视本方碰撞
-        List<Warrior> list;
+        List<Warrior> warriorlist;
+        List<Ammo> ammolist;
         if (sponsors[0].isAttacker)
         {
-            list = BattleField.Instance.AttackerList;
+            warriorlist = BattleField.Instance.AttackerList;
+            ammolist = BattleField.Instance.AttackerAmmoList;
             ammo.transform.localScale = new Vector3(1, 1, 1);
             dir = 1;
         }
         else
         {
-            list = BattleField.Instance.DefenderList;
+            warriorlist = BattleField.Instance.DefenderList;
+            ammolist = BattleField.Instance.DefenderAmmoList;
             ammo.transform.localScale = new Vector3(-1, 1, 1);
             dir = -1;
 
         }
-        foreach (Warrior warrior in list)
+        foreach (Warrior warrior in warriorlist)
         {
             Physics.IgnoreCollision(ammo.collider, warrior.collider);
         }
+        foreach (Ammo otherammo in ammolist)
+        {
+            Physics.IgnoreCollision(ammo.collider, otherammo.collider);
+        }
+        ammolist.Add(ammo);
         
         //发射
         ammo.rigidbody.velocity = new Vector3(dir, 0, 0);

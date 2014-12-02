@@ -33,11 +33,23 @@ public class BattleField : MonoBehaviour
     }
     public List<Warrior> AttackerList;
     public List<Warrior> DefenderList;
-
+    public List<Ammo> AttackerAmmoList;
+    public List<Ammo> DefenderAmmoList;
+    public List<GameObject> trashList;
 
     void Awake()
     {
         m_instance = this;
+    }
+    public void AddTrash(GameObject go)
+    {
+        trashList.Add(go);
+        if (trashList.Count>10)
+        {
+            GameObject trash = trashList[trashList.Count - 1];
+            trashList.RemoveAt(trashList.Count - 1);
+            GameObject.Destroy(trash);
+        }
     }
     public void StartBattle()
     {
@@ -47,7 +59,7 @@ public class BattleField : MonoBehaviour
         {
             Warrior attacker = Warrior.Create();
             this.gameObject.AddChild(attacker.gameObject);
-            attacker.transform.localPosition = new Vector3(-Screen.width/2 + 50+i*20, -Screen.height/2 + 80, 0);
+            attacker.transform.localPosition = new Vector3(-Screen.width / 2 + 50 + i * 20, -Screen.height / 2 + 82, 0);
             attacker.isAttacker = true;
             attacker.name = "attacker" + i;
             AttackerList.Add(attacker);
@@ -64,7 +76,7 @@ public class BattleField : MonoBehaviour
         {
             Warrior defender = Warrior.Create();
             this.gameObject.AddChild(defender.gameObject);
-            defender.transform.localPosition = new Vector3(Screen.width / 2 - 50 - i * 20, -Screen.height / 2 + 80, 0);
+            defender.transform.localPosition = new Vector3(Screen.width / 2 - 50 - i * 20, -Screen.height / 2 + 82, 0);
             defender.name = "defender" + i;
             DefenderList.Add(defender);
         }
@@ -131,21 +143,7 @@ public class BattleField : MonoBehaviour
 
     void Update()
     {
-        foreach (Warrior attacker in AttackerList)
-        {
-            foreach (Warrior defender in DefenderList)
-            {
-                float dis = Mathf.Abs(attacker.transform.localPosition.x - defender.transform.localPosition.x);
-                if (attacker.attackState == AttackState.None && attacker.attackDistance >= dis)
-                {
-                    attacker.Attack();
-                }
-                if (defender.attackState == AttackState.None && defender.attackDistance >= dis)
-                {
-                    defender.Attack();
-                }
-            }
-        }
+
     }
 
 }
