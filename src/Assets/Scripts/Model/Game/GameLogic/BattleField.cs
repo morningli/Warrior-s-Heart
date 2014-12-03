@@ -31,23 +31,70 @@ public class BattleField : MonoBehaviour
             return m_instance;
         }
     }
-    List<Warrior> m_AttackerList;
-    List<Warrior> m_DefenderList;
-
-    public float baseLength;
+    public List<Warrior> AttackerList;
+    public List<Warrior> DefenderList;
+    public List<Ammo> AttackerAmmoList;
+    public List<Ammo> DefenderAmmoList;
+    public List<GameObject> trashList;
 
     void Awake()
     {
         m_instance = this;
-        baseLength = Screen.currentResolution.width / 100.0f;
+    }
+    public void AddTrash(GameObject go)
+    {
+        trashList.Add(go);
+        if (trashList.Count>10)
+        {
+            GameObject trash = trashList[trashList.Count - 1];
+            trashList.RemoveAt(trashList.Count - 1);
+            GameObject.Destroy(trash);
+        }
     }
     public void StartBattle()
     {
         this.SendEvent(BattleEventType.WillStartBattle);
-        /////////////////////////
+        //TEST///////////////////////
+        for (int i = 0; i < 2; i++)
+        {
+            Warrior attacker = Warrior.Create();
+            this.gameObject.AddChild(attacker.gameObject);
+            attacker.transform.localPosition = new Vector3(-Screen.width / 2 + 50 + i * 20, -Screen.height / 2 + 82, 0);
+            attacker.isAttacker = true;
+            attacker.name = "attacker" + i;
+            AttackerList.Add(attacker);
+        }
+        for (int i = 0; i < AttackerList.Count; i++)
+        {
+            for (int j = i + 1; j < AttackerList.Count; j++)
+            {
+                Physics.IgnoreCollision(AttackerList[i].collider, AttackerList[j].collider);
+            }
+        }
 
+        for (int i = 0; i < 2; i++)
+        {
+            Warrior defender = Warrior.Create();
+            this.gameObject.AddChild(defender.gameObject);
+            defender.transform.localPosition = new Vector3(Screen.width / 2 - 50 - i * 20, -Screen.height / 2 + 82, 0);
+            defender.name = "defender" + i;
+            DefenderList.Add(defender);
+        }
+        for (int i = 0; i < DefenderList.Count; i++)
+        {
+            for (int j = i + 1; j < DefenderList.Count; j++)
+            {
+                Physics.IgnoreCollision(DefenderList[i].collider, DefenderList[j].collider);
+            }
+        }
 
-
+        ///////////////////////////////
+        foreach (Warrior defender in DefenderList)
+        {
+            defender.transform.localScale = new Vector3(-1, 1, 1);
+        }
+        DidHitHandler_Base didhitbase = new DidHitHandler_Base();
+        this.RegisterEvent(BattleEventType.DidHit, didhitbase);
         /////////////////////////
         this.SendEvent(BattleEventType.DidStartBattle);
     }
@@ -56,7 +103,7 @@ public class BattleField : MonoBehaviour
     //Event
     Dictionary<BattleEventType, OrderedList<BattleEventHandler>> EventDic = new Dictionary<BattleEventType, OrderedList<BattleEventHandler>>();
 
-    public void RegisterEvent(BattleEventType define, int priority, BattleEventHandler handler)
+    public void RegisterEvent(BattleEventType define, BattleEventHandler handler)
     {
         if (!EventDic.ContainsKey(define))
         {
@@ -85,7 +132,7 @@ public class BattleField : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            Debug.Log("NoDelegateRecvThisEvent:" + define.ToString());
+            //Debug.Log("NoDelegateRecvThisEvent:" + define.ToString());
             return;
         }
         for (int i = 0; i < handlerlist.Count; i++)
@@ -96,21 +143,7 @@ public class BattleField : MonoBehaviour
 
     void Update()
     {
-        foreach (Warrior attacker in m_AttackerList)
-        {
-            foreach (Warrior defender in m_DefenderList)
-            {
-                float dis=Mathf.Abs(attacker.transform.localPosition.x-defender.transform.localPosition.x);
-                if (attacker.AttackDistance >= dis)
-                {
-                    attacker.Attack();
-                }
-                if (defender.AttackDistance >= dis)
-                {
-                    defender.Attack();
-                }
-            }
-        }
+
     }
 
 }
